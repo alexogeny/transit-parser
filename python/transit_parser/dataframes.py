@@ -20,7 +20,7 @@ Or using the convenience methods:
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
     import pandas as pd
@@ -52,17 +52,17 @@ class GtfsDataFrames:
             feed: A GtfsFeed or LazyGtfsFeed instance
         """
         self._feed = feed
-        self._agencies_df: Optional[pd.DataFrame] = None
-        self._stops_df: Optional[pd.DataFrame] = None
-        self._routes_df: Optional[pd.DataFrame] = None
-        self._trips_df: Optional[pd.DataFrame] = None
-        self._stop_times_df: Optional[pd.DataFrame] = None
-        self._calendars_df: Optional[pd.DataFrame] = None
-        self._calendar_dates_df: Optional[pd.DataFrame] = None
-        self._shapes_df: Optional[pd.DataFrame] = None
+        self._agencies_df: pd.DataFrame | None = None
+        self._stops_df: pd.DataFrame | None = None
+        self._routes_df: pd.DataFrame | None = None
+        self._trips_df: pd.DataFrame | None = None
+        self._stop_times_df: pd.DataFrame | None = None
+        self._calendars_df: pd.DataFrame | None = None
+        self._calendar_dates_df: pd.DataFrame | None = None
+        self._shapes_df: pd.DataFrame | None = None
 
     @classmethod
-    def from_path(cls, path: str) -> "GtfsDataFrames":
+    def from_path(cls, path: str) -> GtfsDataFrames:
         """Load GTFS feed from a directory path as DataFrames.
 
         Args:
@@ -76,7 +76,7 @@ class GtfsDataFrames:
         return cls(feed)
 
     @classmethod
-    def from_zip(cls, path: str) -> "GtfsDataFrames":
+    def from_zip(cls, path: str) -> GtfsDataFrames:
         """Load GTFS feed from a ZIP file as DataFrames.
 
         Args:
@@ -90,7 +90,7 @@ class GtfsDataFrames:
         return cls(feed)
 
     @property
-    def agencies(self) -> "pd.DataFrame":
+    def agencies(self) -> pd.DataFrame:
         """Get agencies as a DataFrame."""
         if self._agencies_df is None:
             pd = _check_pandas()
@@ -107,7 +107,7 @@ class GtfsDataFrames:
         return self._agencies_df
 
     @property
-    def stops(self) -> "pd.DataFrame":
+    def stops(self) -> pd.DataFrame:
         """Get stops as a DataFrame."""
         if self._stops_df is None:
             pd = _check_pandas()
@@ -125,7 +125,7 @@ class GtfsDataFrames:
         return self._stops_df
 
     @property
-    def routes(self) -> "pd.DataFrame":
+    def routes(self) -> pd.DataFrame:
         """Get routes as a DataFrame."""
         if self._routes_df is None:
             pd = _check_pandas()
@@ -142,7 +142,7 @@ class GtfsDataFrames:
         return self._routes_df
 
     @property
-    def trips(self) -> "pd.DataFrame":
+    def trips(self) -> pd.DataFrame:
         """Get trips as a DataFrame."""
         if self._trips_df is None:
             pd = _check_pandas()
@@ -159,7 +159,7 @@ class GtfsDataFrames:
         return self._trips_df
 
     @property
-    def stop_times(self) -> "pd.DataFrame":
+    def stop_times(self) -> pd.DataFrame:
         """Get stop_times as a DataFrame."""
         if self._stop_times_df is None:
             pd = _check_pandas()
@@ -177,7 +177,7 @@ class GtfsDataFrames:
         return self._stop_times_df
 
     @property
-    def calendar(self) -> "pd.DataFrame":
+    def calendar(self) -> pd.DataFrame:
         """Get calendar as a DataFrame."""
         if self._calendars_df is None:
             pd = _check_pandas()
@@ -200,7 +200,7 @@ class GtfsDataFrames:
         return self._calendars_df
 
     @property
-    def calendar_dates(self) -> "pd.DataFrame":
+    def calendar_dates(self) -> pd.DataFrame:
         """Get calendar_dates as a DataFrame."""
         if self._calendar_dates_df is None:
             pd = _check_pandas()
@@ -216,7 +216,7 @@ class GtfsDataFrames:
         return self._calendar_dates_df
 
     @property
-    def shapes(self) -> "pd.DataFrame":
+    def shapes(self) -> pd.DataFrame:
         """Get shapes as a DataFrame (flattened to one row per point)."""
         if self._shapes_df is None:
             pd = _check_pandas()

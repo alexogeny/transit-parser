@@ -5,7 +5,9 @@
 mod converter;
 pub mod mapping;
 
-pub use converter::{ConversionOptions, ConversionResult, ConversionStats, TxcToGtfsConverter, UkRegion};
+pub use converter::{
+    ConversionOptions, ConversionResult, ConversionStats, TxcToGtfsConverter, UkRegion,
+};
 
 use gtfs_parser::GtfsFeed;
 use transit_core::AdapterError;

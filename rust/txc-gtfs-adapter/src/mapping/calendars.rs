@@ -29,7 +29,8 @@ pub fn map_calendars(
             calendars.push(calendar);
 
             // Add calendar exceptions for bank holidays
-            let exceptions = map_bank_holiday_exceptions(&service_id, profile, start_date, end_date);
+            let exceptions =
+                map_bank_holiday_exceptions(&service_id, profile, start_date, end_date);
             calendar_dates.extend(exceptions);
         }
     }
@@ -46,12 +47,7 @@ fn get_date_range(service: &TxcService, options: &ConversionOptions) -> (NaiveDa
 
     let end = options
         .calendar_end
-        .or_else(|| {
-            service
-                .operating_period
-                .as_ref()
-                .and_then(|p| p.end_date)
-        })
+        .or_else(|| service.operating_period.as_ref().and_then(|p| p.end_date))
         .unwrap_or_else(|| NaiveDate::from_ymd_opt(2024, 12, 31).unwrap());
 
     (start, end)

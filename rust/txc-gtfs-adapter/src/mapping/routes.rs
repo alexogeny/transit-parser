@@ -5,10 +5,7 @@ use transit_core::{AdapterError, Route, RouteType};
 use txc_parser::TxcDocument;
 
 /// Map TXC services/lines to GTFS routes.
-pub fn map_routes(
-    doc: &TxcDocument,
-    ctx: &mut MappingContext,
-) -> Result<Vec<Route>, AdapterError> {
+pub fn map_routes(doc: &TxcDocument, ctx: &mut MappingContext) -> Result<Vec<Route>, AdapterError> {
     let mut routes = Vec::new();
 
     for service in &doc.services {

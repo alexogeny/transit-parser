@@ -35,7 +35,6 @@ if TYPE_CHECKING:
     from transit_parser import (
         Agency,
         Calendar,
-        CalendarDate,
         GtfsFeed,
         LazyGtfsFeed,
         Route,
@@ -56,7 +55,7 @@ class GtfsFilter:
         feed: The underlying GTFS feed to filter.
     """
 
-    def __init__(self, feed: "GtfsFeed | LazyGtfsFeed") -> None:
+    def __init__(self, feed: GtfsFeed | LazyGtfsFeed) -> None:
         """Initialize the filter with a GTFS feed.
 
         Args:
@@ -71,7 +70,7 @@ class GtfsFilter:
         self._service_index: dict[str, Calendar] | None = None
 
     @property
-    def feed(self) -> "GtfsFeed | LazyGtfsFeed":
+    def feed(self) -> GtfsFeed | LazyGtfsFeed:
         """Return the underlying feed."""
         return self._feed
 
@@ -79,27 +78,27 @@ class GtfsFilter:
     # Index building (lazy)
     # -------------------------------------------------------------------------
 
-    def _build_stop_index(self) -> dict[str, "Stop"]:
+    def _build_stop_index(self) -> dict[str, Stop]:
         if self._stop_index is None:
             self._stop_index = {s.id: s for s in self._feed.stops}
         return self._stop_index
 
-    def _build_route_index(self) -> dict[str, "Route"]:
+    def _build_route_index(self) -> dict[str, Route]:
         if self._route_index is None:
             self._route_index = {r.id: r for r in self._feed.routes}
         return self._route_index
 
-    def _build_trip_index(self) -> dict[str, "Trip"]:
+    def _build_trip_index(self) -> dict[str, Trip]:
         if self._trip_index is None:
             self._trip_index = {t.id: t for t in self._feed.trips}
         return self._trip_index
 
-    def _build_agency_index(self) -> dict[str, "Agency"]:
+    def _build_agency_index(self) -> dict[str, Agency]:
         if self._agency_index is None:
             self._agency_index = {a.id: a for a in self._feed.agencies if a.id}
         return self._agency_index
 
-    def _build_service_index(self) -> dict[str, "Calendar"]:
+    def _build_service_index(self) -> dict[str, Calendar]:
         if self._service_index is None:
             self._service_index = {c.service_id: c for c in self._feed.calendars}
         return self._service_index
@@ -108,7 +107,7 @@ class GtfsFilter:
     # Lookup by ID
     # -------------------------------------------------------------------------
 
-    def get_stop(self, stop_id: str) -> "Stop | None":
+    def get_stop(self, stop_id: str) -> Stop | None:
         """Get a stop by its ID.
 
         Args:
@@ -119,7 +118,7 @@ class GtfsFilter:
         """
         return self._build_stop_index().get(stop_id)
 
-    def get_route(self, route_id: str) -> "Route | None":
+    def get_route(self, route_id: str) -> Route | None:
         """Get a route by its ID.
 
         Args:
@@ -130,7 +129,7 @@ class GtfsFilter:
         """
         return self._build_route_index().get(route_id)
 
-    def get_trip(self, trip_id: str) -> "Trip | None":
+    def get_trip(self, trip_id: str) -> Trip | None:
         """Get a trip by its ID.
 
         Args:
@@ -141,7 +140,7 @@ class GtfsFilter:
         """
         return self._build_trip_index().get(trip_id)
 
-    def get_agency(self, agency_id: str) -> "Agency | None":
+    def get_agency(self, agency_id: str) -> Agency | None:
         """Get an agency by its ID.
 
         Args:
@@ -152,7 +151,7 @@ class GtfsFilter:
         """
         return self._build_agency_index().get(agency_id)
 
-    def get_calendar(self, service_id: str) -> "Calendar | None":
+    def get_calendar(self, service_id: str) -> Calendar | None:
         """Get a calendar entry by service ID.
 
         Args:
@@ -167,7 +166,7 @@ class GtfsFilter:
     # Filter by route
     # -------------------------------------------------------------------------
 
-    def trips_for_route(self, route_id: str) -> list["Trip"]:
+    def trips_for_route(self, route_id: str) -> list[Trip]:
         """Get all trips for a specific route.
 
         Args:
@@ -178,7 +177,7 @@ class GtfsFilter:
         """
         return [t for t in self._feed.trips if t.route_id == route_id]
 
-    def stop_times_for_route(self, route_id: str) -> list["StopTime"]:
+    def stop_times_for_route(self, route_id: str) -> list[StopTime]:
         """Get all stop times for a specific route.
 
         Args:
@@ -190,7 +189,7 @@ class GtfsFilter:
         trip_ids = {t.id for t in self.trips_for_route(route_id)}
         return [st for st in self._feed.stop_times if st.trip_id in trip_ids]
 
-    def stops_for_route(self, route_id: str) -> list["Stop"]:
+    def stops_for_route(self, route_id: str) -> list[Stop]:
         """Get all unique stops served by a specific route.
 
         Args:
@@ -207,7 +206,7 @@ class GtfsFilter:
     # Filter by agency
     # -------------------------------------------------------------------------
 
-    def routes_for_agency(self, agency_id: str) -> list["Route"]:
+    def routes_for_agency(self, agency_id: str) -> list[Route]:
         """Get all routes operated by a specific agency.
 
         Args:
@@ -228,7 +227,7 @@ class GtfsFilter:
                 routes.append(route)
         return routes
 
-    def trips_for_agency(self, agency_id: str) -> list["Trip"]:
+    def trips_for_agency(self, agency_id: str) -> list[Trip]:
         """Get all trips for routes operated by a specific agency.
 
         Args:
@@ -244,7 +243,7 @@ class GtfsFilter:
     # Filter by trip
     # -------------------------------------------------------------------------
 
-    def stop_times_for_trip(self, trip_id: str) -> list["StopTime"]:
+    def stop_times_for_trip(self, trip_id: str) -> list[StopTime]:
         """Get all stop times for a specific trip, ordered by sequence.
 
         Args:
@@ -256,7 +255,7 @@ class GtfsFilter:
         times = [st for st in self._feed.stop_times if st.trip_id == trip_id]
         return sorted(times, key=lambda st: st.stop_sequence)
 
-    def stops_for_trip(self, trip_id: str) -> list["Stop"]:
+    def stops_for_trip(self, trip_id: str) -> list[Stop]:
         """Get all stops for a specific trip, in sequence order.
 
         Args:
@@ -273,7 +272,7 @@ class GtfsFilter:
     # Filter by stop
     # -------------------------------------------------------------------------
 
-    def stop_times_at_stop(self, stop_id: str) -> list["StopTime"]:
+    def stop_times_at_stop(self, stop_id: str) -> list[StopTime]:
         """Get all stop times at a specific stop.
 
         Args:
@@ -284,7 +283,7 @@ class GtfsFilter:
         """
         return [st for st in self._feed.stop_times if st.stop_id == stop_id]
 
-    def trips_serving_stop(self, stop_id: str) -> list["Trip"]:
+    def trips_serving_stop(self, stop_id: str) -> list[Trip]:
         """Get all trips that serve a specific stop.
 
         Args:
@@ -297,7 +296,7 @@ class GtfsFilter:
         trip_index = self._build_trip_index()
         return [trip_index[tid] for tid in trip_ids if tid in trip_index]
 
-    def routes_serving_stop(self, stop_id: str) -> list["Route"]:
+    def routes_serving_stop(self, stop_id: str) -> list[Route]:
         """Get all routes that serve a specific stop.
 
         Args:
@@ -314,7 +313,7 @@ class GtfsFilter:
     # Filter by service/date
     # -------------------------------------------------------------------------
 
-    def trips_for_service(self, service_id: str) -> list["Trip"]:
+    def trips_for_service(self, service_id: str) -> list[Trip]:
         """Get all trips for a specific service.
 
         Args:
@@ -355,7 +354,7 @@ class GtfsFilter:
         """Convert a date to GTFS format (YYYYMMDD)."""
         return d.strftime("%Y%m%d")
 
-    def active_services_on(self, date_input: str | date) -> list["Calendar"]:
+    def active_services_on(self, date_input: str | date) -> list[Calendar]:
         """Get all services active on a specific date.
 
         Takes into account both the regular calendar and calendar_dates
@@ -406,7 +405,7 @@ class GtfsFilter:
 
         return active_services
 
-    def trips_on_date(self, date_input: str | date) -> list["Trip"]:
+    def trips_on_date(self, date_input: str | date) -> list[Trip]:
         """Get all trips running on a specific date.
 
         Args:
@@ -422,7 +421,7 @@ class GtfsFilter:
     # Shape queries
     # -------------------------------------------------------------------------
 
-    def shape_for_trip(self, trip_id: str) -> "Shape | None":
+    def shape_for_trip(self, trip_id: str) -> Shape | None:
         """Get the shape for a specific trip.
 
         Args:

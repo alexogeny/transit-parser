@@ -1,7 +1,7 @@
 //! TXC Python bindings.
 
-use pyo3::prelude::*;
 use pyo3::exceptions::PyIOError;
+use pyo3::prelude::*;
 use txc_parser::TxcDocument;
 
 /// Python wrapper for TXC document.

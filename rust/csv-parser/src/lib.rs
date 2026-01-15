@@ -38,13 +38,19 @@ impl CsvDocument {
     }
 
     /// Parse CSV from string.
+    #[allow(clippy::should_implement_trait)]
     pub fn from_str(csv: &str) -> Result<Self, ParseError> {
         CsvReader::read_str(csv, ReadOptions::default())
     }
 
     /// Write CSV to path.
     pub fn to_path(&self, path: impl AsRef<Path>) -> Result<(), ParseError> {
-        CsvWriter::write_path(&self.rows, &self.schema, path.as_ref(), WriteOptions::default())
+        CsvWriter::write_path(
+            &self.rows,
+            &self.schema,
+            path.as_ref(),
+            WriteOptions::default(),
+        )
     }
 
     /// Write CSV to string.

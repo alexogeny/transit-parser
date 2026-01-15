@@ -34,7 +34,7 @@ impl PyLazyGtfsFeed {
     #[staticmethod]
     fn from_path(path: &str) -> PyResult<Self> {
         LazyGtfsFeed::from_path(path)
-            .map(|inner| Self::new_from_inner(inner))
+            .map(Self::new_from_inner)
             .map_err(|e| PyIOError::new_err(e.to_string()))
     }
 
@@ -45,7 +45,7 @@ impl PyLazyGtfsFeed {
     #[staticmethod]
     fn from_zip(path: &str) -> PyResult<Self> {
         LazyGtfsFeed::from_zip(path)
-            .map(|inner| Self::new_from_inner(inner))
+            .map(Self::new_from_inner)
             .map_err(|e| PyIOError::new_err(e.to_string()))
     }
 
@@ -53,7 +53,7 @@ impl PyLazyGtfsFeed {
     #[staticmethod]
     fn from_bytes(data: &[u8]) -> PyResult<Self> {
         LazyGtfsFeed::from_bytes(data.to_vec())
-            .map(|inner| Self::new_from_inner(inner))
+            .map(Self::new_from_inner)
             .map_err(|e| PyIOError::new_err(e.to_string()))
     }
 

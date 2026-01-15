@@ -35,7 +35,10 @@ pub fn map_stop_times(
             None => {
                 warnings.push(Warning::new(
                     "MISSING_TRIP",
-                    format!("No trip found for vehicle journey: {}", vj.vehicle_journey_code),
+                    format!(
+                        "No trip found for vehicle journey: {}",
+                        vj.vehicle_journey_code
+                    ),
                 ));
                 continue;
             }
@@ -177,10 +180,7 @@ fn generate_stop_times_from_section(
             current_time += 120;
             warnings.push(Warning::new(
                 "DEFAULT_RUN_TIME",
-                format!(
-                    "No run time for link {}, using default 2 minutes",
-                    link.id
-                ),
+                format!("No run time for link {}, using default 2 minutes", link.id),
             ));
         }
 

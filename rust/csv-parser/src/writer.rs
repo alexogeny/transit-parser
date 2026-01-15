@@ -81,7 +81,9 @@ impl CsvWriter {
                 .map_err(|e| ParseError::Csv(e.to_string()))?;
         }
 
-        csv_writer.flush().map_err(|e| ParseError::Csv(e.to_string()))?;
+        csv_writer
+            .flush()
+            .map_err(|e| ParseError::Csv(e.to_string()))?;
         Ok(())
     }
 

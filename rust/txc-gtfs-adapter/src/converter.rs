@@ -140,8 +140,11 @@ impl TxcToGtfsConverter {
 
         for doc in docs {
             // Map each document and merge
-            feed.agencies
-                .extend(mapping::agencies::map_agencies(&doc, &self.options, &mut ctx)?);
+            feed.agencies.extend(mapping::agencies::map_agencies(
+                &doc,
+                &self.options,
+                &mut ctx,
+            )?);
             feed.stops
                 .extend(mapping::stops::map_stops(&doc, &mut ctx)?);
             feed.routes
@@ -156,8 +159,11 @@ impl TxcToGtfsConverter {
                 .extend(mapping::trips::map_trips(&doc, &mut ctx)?);
 
             let mut warnings = Vec::new();
-            feed.stop_times
-                .extend(mapping::stop_times::map_stop_times(&doc, &mut ctx, &mut warnings)?);
+            feed.stop_times.extend(mapping::stop_times::map_stop_times(
+                &doc,
+                &mut ctx,
+                &mut warnings,
+            )?);
             all_warnings.extend(warnings);
 
             if self.options.include_shapes {

@@ -1,8 +1,8 @@
 //! CSV Python bindings.
 
 use csv_parser::CsvDocument;
-use pyo3::prelude::*;
 use pyo3::exceptions::PyIOError;
+use pyo3::prelude::*;
 
 /// Python wrapper for CSV document.
 #[pyclass(name = "CsvDocument")]

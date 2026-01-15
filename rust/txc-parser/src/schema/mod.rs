@@ -1,8 +1,9 @@
 //! TXC schema version handling.
 
 /// Supported TXC schema versions.
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
 pub enum TxcSchemaVersion {
+    #[default]
     V2_4,
     V2_5,
     Unknown,
@@ -27,11 +28,5 @@ impl TxcSchemaVersion {
             Self::V2_5 => "2.5",
             Self::Unknown => "unknown",
         }
-    }
-}
-
-impl Default for TxcSchemaVersion {
-    fn default() -> Self {
-        Self::V2_4
     }
 }

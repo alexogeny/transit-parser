@@ -6,7 +6,7 @@ mod reader;
 pub mod schema;
 pub mod types;
 
-pub use reader::{TxcReader, ReadOptions};
+pub use reader::{ReadOptions, TxcReader};
 pub use types::*;
 
 use std::path::Path;
@@ -59,6 +59,7 @@ impl TxcDocument {
     }
 
     /// Parse a TXC document from a string.
+    #[allow(clippy::should_implement_trait)]
     pub fn from_str(xml: &str) -> Result<Self, ParseError> {
         TxcReader::read_str(xml, ReadOptions::default())
     }

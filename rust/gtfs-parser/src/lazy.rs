@@ -3,13 +3,13 @@
 //! This module provides a lazy-loading version of GtfsFeed that defers
 //! CSV parsing until first access, similar to partridge's approach.
 
-use crate::reader::{GtfsReader, ReadOptions};
+use crate::reader::ReadOptions;
 use crate::types::*;
 use chrono::NaiveDate;
 use csv::ReaderBuilder;
 use std::collections::HashMap;
 use std::fs::File;
-use std::io::{BufReader, Cursor, Read, Seek};
+use std::io::{BufReader, Cursor, Read};
 use std::path::{Path, PathBuf};
 use std::sync::Mutex;
 use transit_core::{
@@ -64,14 +64,22 @@ impl LazyGtfsFeed {
         let has_shapes = path.join("shapes.txt").exists();
 
         // Verify required files exist
-        for required in &["agency.txt", "stops.txt", "routes.txt", "trips.txt", "stop_times.txt"] {
+        for required in &[
+            "agency.txt",
+            "stops.txt",
+            "routes.txt",
+            "trips.txt",
+            "stop_times.txt",
+        ] {
             if !path.join(required).exists() {
                 return Err(ParseError::MissingField(required.to_string()));
             }
         }
 
         if !has_calendar && !has_calendar_dates {
-            return Err(ParseError::MissingField("calendar.txt or calendar_dates.txt".to_string()));
+            return Err(ParseError::MissingField(
+                "calendar.txt or calendar_dates.txt".to_string(),
+            ));
         }
 
         Ok(Self {
@@ -108,8 +116,7 @@ impl LazyGtfsFeed {
     pub fn from_bytes(bytes: Vec<u8>) -> Result<Self, ParseError> {
         // Scan the ZIP to see what files exist
         let cursor = Cursor::new(&bytes);
-        let archive = ZipArchive::new(cursor)
-            .map_err(|e| ParseError::Zip(e.to_string()))?;
+        let archive = ZipArchive::new(cursor).map_err(|e| ParseError::Zip(e.to_string()))?;
 
         let file_names: Vec<String> = archive.file_names().map(|s| s.to_string()).collect();
 
@@ -118,14 +125,22 @@ impl LazyGtfsFeed {
         let has_shapes = file_names.iter().any(|f| f.ends_with("shapes.txt"));
 
         // Verify required files
-        for required in &["agency.txt", "stops.txt", "routes.txt", "trips.txt", "stop_times.txt"] {
+        for required in &[
+            "agency.txt",
+            "stops.txt",
+            "routes.txt",
+            "trips.txt",
+            "stop_times.txt",
+        ] {
             if !file_names.iter().any(|f| f.ends_with(required)) {
                 return Err(ParseError::MissingField(required.to_string()));
             }
         }
 
         if !has_calendar && !has_calendar_dates {
-            return Err(ParseError::MissingField("calendar.txt or calendar_dates.txt".to_string()));
+            return Err(ParseError::MissingField(
+                "calendar.txt or calendar_dates.txt".to_string(),
+            ));
         }
 
         Ok(Self {
@@ -234,9 +249,10 @@ impl LazyGtfsFeed {
             }
             GtfsSource::Bytes(bytes) => {
                 let cursor = Cursor::new(bytes);
-                let mut archive = ZipArchive::new(cursor)
-                    .map_err(|e| ParseError::Zip(e.to_string()))?;
-                let file = archive.by_name(filename)
+                let mut archive =
+                    ZipArchive::new(cursor).map_err(|e| ParseError::Zip(e.to_string()))?;
+                let file = archive
+                    .by_name(filename)
                     .map_err(|_| ParseError::MissingField(filename.to_string()))?;
                 Self::count_csv_records(file)
             }
@@ -244,9 +260,7 @@ impl LazyGtfsFeed {
     }
 
     fn count_csv_records<R: Read>(reader: R) -> Result<usize, ParseError> {
-        let mut csv_reader = ReaderBuilder::new()
-            .has_headers(true)
-            .from_reader(reader);
+        let mut csv_reader = ReaderBuilder::new().has_headers(true).from_reader(reader);
 
         // Count records without deserializing
         let count = csv_reader.records().count();
@@ -397,9 +411,10 @@ impl LazyGtfsFeed {
             }
             GtfsSource::Bytes(bytes) => {
                 let cursor = Cursor::new(bytes);
-                let mut archive = ZipArchive::new(cursor)
-                    .map_err(|e| ParseError::Zip(e.to_string()))?;
-                let file = archive.by_name(filename)
+                let mut archive =
+                    ZipArchive::new(cursor).map_err(|e| ParseError::Zip(e.to_string()))?;
+                let file = archive
+                    .by_name(filename)
                     .map_err(|_| ParseError::MissingField(filename.to_string()))?;
                 Self::parse_csv::<_, T>(file, &self.options)
             }
@@ -437,9 +452,10 @@ impl LazyGtfsFeed {
             }
             GtfsSource::Bytes(bytes) => {
                 let cursor = Cursor::new(bytes);
-                let mut archive = ZipArchive::new(cursor)
-                    .map_err(|e| ParseError::Zip(e.to_string()))?;
-                let file = archive.by_name("shapes.txt")
+                let mut archive =
+                    ZipArchive::new(cursor).map_err(|e| ParseError::Zip(e.to_string()))?;
+                let file = archive
+                    .by_name("shapes.txt")
                     .map_err(|_| ParseError::MissingField("shapes.txt".to_string()))?;
                 Self::parse_csv_raw(file, &self.options)?
             }
@@ -453,10 +469,7 @@ impl LazyGtfsFeed {
                 sequence: raw.shape_pt_sequence,
                 dist_traveled: raw.shape_dist_traveled,
             };
-            shapes_map
-                .entry(raw.shape_id)
-                .or_default()
-                .push(point);
+            shapes_map.entry(raw.shape_id).or_default().push(point);
         }
 
         let shapes = shapes_map
@@ -529,10 +542,15 @@ impl FromRawLazy for Stop {
             longitude: raw.stop_lon.unwrap_or(0.0),
             zone_id: raw.zone_id,
             url: raw.stop_url,
-            location_type: raw.location_type.and_then(LocationType::from_u8).unwrap_or_default(),
+            location_type: raw
+                .location_type
+                .and_then(LocationType::from_u8)
+                .unwrap_or_default(),
             parent_station: raw.parent_station,
             timezone: raw.stop_timezone,
-            wheelchair_boarding: raw.wheelchair_boarding.and_then(WheelchairBoarding::from_u8),
+            wheelchair_boarding: raw
+                .wheelchair_boarding
+                .and_then(WheelchairBoarding::from_u8),
             platform_code: raw.platform_code,
             naptan_code: None,
             atco_code: None,
@@ -572,11 +590,17 @@ impl FromRawLazy for Trip {
             service_id: raw.service_id,
             headsign: raw.trip_headsign,
             short_name: raw.trip_short_name,
-            direction_id: raw.direction_id.and_then(transit_core::DirectionId::from_u8),
+            direction_id: raw
+                .direction_id
+                .and_then(transit_core::DirectionId::from_u8),
             block_id: raw.block_id,
             shape_id: raw.shape_id,
-            wheelchair_accessible: raw.wheelchair_accessible.and_then(transit_core::WheelchairAccessible::from_u8),
-            bikes_allowed: raw.bikes_allowed.and_then(transit_core::BikesAllowed::from_u8),
+            wheelchair_accessible: raw
+                .wheelchair_accessible
+                .and_then(transit_core::WheelchairAccessible::from_u8),
+            bikes_allowed: raw
+                .bikes_allowed
+                .and_then(transit_core::BikesAllowed::from_u8),
             vehicle_journey_code: None,
         })
     }
@@ -593,12 +617,21 @@ impl FromRawLazy for StopTime {
             stop_id: raw.stop_id,
             stop_sequence: raw.stop_sequence,
             stop_headsign: raw.stop_headsign,
-            pickup_type: raw.pickup_type.and_then(PickupDropoffType::from_u8).unwrap_or_default(),
-            drop_off_type: raw.drop_off_type.and_then(PickupDropoffType::from_u8).unwrap_or_default(),
+            pickup_type: raw
+                .pickup_type
+                .and_then(PickupDropoffType::from_u8)
+                .unwrap_or_default(),
+            drop_off_type: raw
+                .drop_off_type
+                .and_then(PickupDropoffType::from_u8)
+                .unwrap_or_default(),
             continuous_pickup: raw.continuous_pickup,
             continuous_drop_off: raw.continuous_drop_off,
             shape_dist_traveled: raw.shape_dist_traveled,
-            timepoint: raw.timepoint.and_then(Timepoint::from_u8).unwrap_or_default(),
+            timepoint: raw
+                .timepoint
+                .and_then(Timepoint::from_u8)
+                .unwrap_or_default(),
         })
     }
 }
@@ -630,8 +663,9 @@ impl FromRawLazy for CalendarDate {
 
     fn from_raw(raw: RawCalendarDate) -> Result<Self, ParseError> {
         let date = parse_gtfs_date(&raw.date)?;
-        let exception_type = ExceptionType::from_u8(raw.exception_type)
-            .ok_or_else(|| ParseError::InvalidData(format!("Invalid exception_type: {}", raw.exception_type)))?;
+        let exception_type = ExceptionType::from_u8(raw.exception_type).ok_or_else(|| {
+            ParseError::InvalidData(format!("Invalid exception_type: {}", raw.exception_type))
+        })?;
 
         Ok(CalendarDate {
             service_id: raw.service_id,
@@ -642,6 +676,5 @@ impl FromRawLazy for CalendarDate {
 }
 
 fn parse_gtfs_date(s: &str) -> Result<NaiveDate, ParseError> {
-    NaiveDate::parse_from_str(s, "%Y%m%d")
-        .map_err(|_| ParseError::InvalidDate(s.to_string()))
+    NaiveDate::parse_from_str(s, "%Y%m%d").map_err(|_| ParseError::InvalidDate(s.to_string()))
 }

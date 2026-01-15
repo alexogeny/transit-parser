@@ -45,6 +45,7 @@ impl JsonReader {
 }
 
 /// Iterator for streaming JSON arrays.
+#[allow(dead_code)]
 pub struct JsonArrayIterator<R: Read> {
     reader: std::io::BufReader<R>,
     buffer: String,
@@ -53,11 +54,12 @@ pub struct JsonArrayIterator<R: Read> {
     escape_next: bool,
 }
 
+#[allow(dead_code)]
 impl<R: Read> JsonArrayIterator<R> {
     /// Create a new streaming iterator for a JSON array.
     pub fn new(reader: R) -> Result<Self, ParseError> {
         let mut buf_reader = std::io::BufReader::new(reader);
-        let mut buffer = String::new();
+        let buffer = String::new();
 
         // Find the opening bracket
         let mut found_start = false;

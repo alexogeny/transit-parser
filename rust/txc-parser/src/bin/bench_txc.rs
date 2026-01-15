@@ -6,7 +6,10 @@ use txc_parser::TxcDocument;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
-    let path = args.get(1).map(|s| s.as_str()).unwrap_or("MET20250428(Schedule)v1-1.xml");
+    let path = args
+        .get(1)
+        .map(|s| s.as_str())
+        .unwrap_or("MET20250428(Schedule)v1-1.xml");
 
     println!("Benchmarking TXC parsing: {}", path);
 

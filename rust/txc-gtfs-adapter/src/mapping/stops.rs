@@ -5,10 +5,7 @@ use transit_core::{AdapterError, LocationType, Stop};
 use txc_parser::TxcDocument;
 
 /// Map TXC stop points to GTFS stops.
-pub fn map_stops(
-    doc: &TxcDocument,
-    ctx: &mut MappingContext,
-) -> Result<Vec<Stop>, AdapterError> {
+pub fn map_stops(doc: &TxcDocument, ctx: &mut MappingContext) -> Result<Vec<Stop>, AdapterError> {
     let mut stops = Vec::new();
 
     for txc_stop in &doc.stop_points {
@@ -87,7 +84,8 @@ fn convert_osgb_to_wgs84(easting: i32, northing: i32) -> (f64, f64) {
 
     // Iterative calculation of latitude
     for _ in 0..10 {
-        let m = b * f0
+        let m = b
+            * f0
             * ((1.0 + n_val + 1.25 * n_val * n_val + 1.25 * n_val.powi(3)) * (phi - lat0)
                 - (3.0 * n_val + 3.0 * n_val * n_val + 2.625 * n_val.powi(3))
                     * (phi - lat0).sin()
@@ -100,7 +98,7 @@ fn convert_osgb_to_wgs84(easting: i32, northing: i32) -> (f64, f64) {
                     * (3.0 * (phi - lat0)).sin()
                     * (3.0 * (phi + lat0)).cos());
 
-        phi = (n - n0 - m) / (a * f0) + phi;
+        phi += (n - n0 - m) / (a * f0);
     }
 
     let sin_phi = phi.sin();
@@ -119,8 +117,8 @@ fn convert_osgb_to_wgs84(easting: i32, northing: i32) -> (f64, f64) {
         * (61.0 + 90.0 * tan_phi * tan_phi + 45.0 * tan_phi.powi(4));
     let x = sec_phi / nu;
     let xi = sec_phi / (6.0 * nu.powi(3)) * (nu / rho + 2.0 * tan_phi * tan_phi);
-    let xii = sec_phi / (120.0 * nu.powi(5))
-        * (5.0 + 28.0 * tan_phi * tan_phi + 24.0 * tan_phi.powi(4));
+    let xii =
+        sec_phi / (120.0 * nu.powi(5)) * (5.0 + 28.0 * tan_phi * tan_phi + 24.0 * tan_phi.powi(4));
     let xiia = sec_phi / (5040.0 * nu.powi(7))
         * (61.0 + 662.0 * tan_phi * tan_phi + 1320.0 * tan_phi.powi(4) + 720.0 * tan_phi.powi(6));
 

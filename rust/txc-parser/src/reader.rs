@@ -7,7 +7,7 @@ use chrono::NaiveDate;
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use std::fs::File;
-use std::io::{BufRead, BufReader, Read};
+use std::io::{BufRead, BufReader};
 use std::path::Path;
 use transit_core::ParseError;
 
@@ -70,12 +70,14 @@ impl TxcReader {
                                 Self::parse_route_sections(&mut xml_reader, &mut buf, &options)?;
                         }
                         b"Routes" => {
-                            doc.routes =
-                                Self::parse_routes(&mut xml_reader, &mut buf, &options)?;
+                            doc.routes = Self::parse_routes(&mut xml_reader, &mut buf, &options)?;
                         }
                         b"JourneyPatternSections" => {
-                            doc.journey_pattern_sections =
-                                Self::parse_journey_pattern_sections(&mut xml_reader, &mut buf, &options)?;
+                            doc.journey_pattern_sections = Self::parse_journey_pattern_sections(
+                                &mut xml_reader,
+                                &mut buf,
+                                &options,
+                            )?;
                         }
                         b"Services" => {
                             let (services, journey_patterns) =
@@ -550,8 +552,8 @@ impl TxcReader {
         let mut current_tag = String::new();
         let mut in_line = false;
         let mut in_operating_period = false;
-        let mut in_operating_profile = false;
-        let mut in_regular_day_type = false;
+        let mut _in_operating_profile = false;
+        let mut _in_regular_day_type = false;
         let mut in_days_of_week = false;
         let mut in_journey_pattern = false;
         let mut temp_start_date: Option<String> = None;
@@ -580,10 +582,10 @@ impl TxcReader {
                             in_operating_period = true;
                         }
                         b"OperatingProfile" => {
-                            in_operating_profile = true;
+                            _in_operating_profile = true;
                         }
                         b"RegularDayType" => {
-                            in_regular_day_type = true;
+                            _in_regular_day_type = true;
                         }
                         b"DaysOfWeek" => {
                             in_days_of_week = true;
@@ -669,7 +671,9 @@ impl TxcReader {
                     match name.as_ref() {
                         b"Line" => {
                             in_line = false;
-                            if let (Some(ref mut svc), Some(line)) = (&mut current, current_line.take()) {
+                            if let (Some(ref mut svc), Some(line)) =
+                                (&mut current, current_line.take())
+                            {
                                 svc.lines.push(line);
                             }
                         }
@@ -677,10 +681,12 @@ impl TxcReader {
                             in_operating_period = false;
                             if let Some(ref mut svc) = current {
                                 if let Some(start_str) = temp_start_date.take() {
-                                    if let Ok(start) = NaiveDate::parse_from_str(&start_str, "%Y-%m-%d") {
-                                        let end = temp_end_date
-                                            .take()
-                                            .and_then(|s| NaiveDate::parse_from_str(&s, "%Y-%m-%d").ok());
+                                    if let Ok(start) =
+                                        NaiveDate::parse_from_str(&start_str, "%Y-%m-%d")
+                                    {
+                                        let end = temp_end_date.take().and_then(|s| {
+                                            NaiveDate::parse_from_str(&s, "%Y-%m-%d").ok()
+                                        });
                                         svc.operating_period = Some(TxcOperatingPeriod {
                                             start_date: start,
                                             end_date: end,
@@ -693,9 +699,10 @@ impl TxcReader {
                             in_days_of_week = false;
                         }
                         b"RegularDayType" => {
-                            in_regular_day_type = false;
+                            _in_regular_day_type = false;
                             if let Some(ref mut svc) = current {
-                                let profile = svc.operating_profile.get_or_insert_with(Default::default);
+                                let profile =
+                                    svc.operating_profile.get_or_insert_with(Default::default);
                                 profile.regular_day_type = Some(TxcRegularDayType {
                                     days_of_week: Some(temp_days.clone()),
                                     holidays_only: false,
@@ -703,7 +710,7 @@ impl TxcReader {
                             }
                         }
                         b"OperatingProfile" => {
-                            in_operating_profile = false;
+                            _in_operating_profile = false;
                         }
                         b"JourneyPattern" => {
                             in_journey_pattern = false;

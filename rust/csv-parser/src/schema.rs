@@ -83,15 +83,17 @@ impl ColumnType {
         }
 
         // Try date (YYYY-MM-DD or YYYYMMDD)
-        if value.len() == 10 && value.chars().nth(4) == Some('-') {
-            if chrono::NaiveDate::parse_from_str(value, "%Y-%m-%d").is_ok() {
-                return Self::Date;
-            }
+        if value.len() == 10
+            && value.chars().nth(4) == Some('-')
+            && chrono::NaiveDate::parse_from_str(value, "%Y-%m-%d").is_ok()
+        {
+            return Self::Date;
         }
-        if value.len() == 8 && value.chars().all(|c| c.is_ascii_digit()) {
-            if chrono::NaiveDate::parse_from_str(value, "%Y%m%d").is_ok() {
-                return Self::Date;
-            }
+        if value.len() == 8
+            && value.chars().all(|c| c.is_ascii_digit())
+            && chrono::NaiveDate::parse_from_str(value, "%Y%m%d").is_ok()
+        {
+            return Self::Date;
         }
 
         Self::String

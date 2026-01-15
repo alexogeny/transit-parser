@@ -74,8 +74,7 @@ impl GtfsReader {
         reader: R,
         options: ReadOptions,
     ) -> Result<GtfsFeed, ParseError> {
-        let mut archive =
-            ZipArchive::new(reader).map_err(|e| ParseError::Zip(e.to_string()))?;
+        let mut archive = ZipArchive::new(reader).map_err(|e| ParseError::Zip(e.to_string()))?;
         let mut feed = TransitFeed::new();
 
         // Read required files
@@ -86,15 +85,21 @@ impl GtfsReader {
         feed.stop_times = Self::read_csv_from_zip(&mut archive, "stop_times.txt", &options)?;
 
         // Calendar files (at least one required)
-        if let Ok(calendars) = Self::read_csv_from_zip::<_, Calendar>(&mut archive, "calendar.txt", &options) {
+        if let Ok(calendars) =
+            Self::read_csv_from_zip::<_, Calendar>(&mut archive, "calendar.txt", &options)
+        {
             feed.calendars = calendars;
         }
-        if let Ok(dates) = Self::read_csv_from_zip::<_, CalendarDate>(&mut archive, "calendar_dates.txt", &options) {
+        if let Ok(dates) =
+            Self::read_csv_from_zip::<_, CalendarDate>(&mut archive, "calendar_dates.txt", &options)
+        {
             feed.calendar_dates = dates;
         }
 
         // Optional files
-        if let Ok(shapes) = Self::read_csv_from_zip::<_, Shape>(&mut archive, "shapes.txt", &options) {
+        if let Ok(shapes) =
+            Self::read_csv_from_zip::<_, Shape>(&mut archive, "shapes.txt", &options)
+        {
             feed.shapes = shapes;
         }
 
@@ -168,10 +173,7 @@ impl GtfsReader {
                 sequence: raw.shape_pt_sequence,
                 dist_traveled: raw.shape_dist_traveled,
             };
-            shapes_map
-                .entry(raw.shape_id)
-                .or_default()
-                .push(point);
+            shapes_map.entry(raw.shape_id).or_default().push(point);
         }
 
         let shapes = shapes_map
@@ -262,7 +264,9 @@ impl FromRaw for Stop {
                 .unwrap_or_default(),
             parent_station: raw.parent_station,
             timezone: raw.stop_timezone,
-            wheelchair_boarding: raw.wheelchair_boarding.and_then(WheelchairBoarding::from_u8),
+            wheelchair_boarding: raw
+                .wheelchair_boarding
+                .and_then(WheelchairBoarding::from_u8),
             platform_code: raw.platform_code,
             naptan_code: None,
             atco_code: None,
@@ -340,7 +344,10 @@ impl FromRaw for StopTime {
             continuous_pickup: raw.continuous_pickup,
             continuous_drop_off: raw.continuous_drop_off,
             shape_dist_traveled: raw.shape_dist_traveled,
-            timepoint: raw.timepoint.and_then(Timepoint::from_u8).unwrap_or_default(),
+            timepoint: raw
+                .timepoint
+                .and_then(Timepoint::from_u8)
+                .unwrap_or_default(),
         })
     }
 }
@@ -372,8 +379,9 @@ impl FromRaw for CalendarDate {
 
     fn from_raw(raw: RawCalendarDate) -> Result<Self, ParseError> {
         let date = parse_gtfs_date(&raw.date)?;
-        let exception_type = ExceptionType::from_u8(raw.exception_type)
-            .ok_or_else(|| ParseError::InvalidData(format!("Invalid exception_type: {}", raw.exception_type)))?;
+        let exception_type = ExceptionType::from_u8(raw.exception_type).ok_or_else(|| {
+            ParseError::InvalidData(format!("Invalid exception_type: {}", raw.exception_type))
+        })?;
 
         Ok(CalendarDate {
             service_id: raw.service_id,
@@ -401,6 +409,5 @@ impl FromRaw for Shape {
 
 /// Parse GTFS date format (YYYYMMDD).
 fn parse_gtfs_date(s: &str) -> Result<NaiveDate, ParseError> {
-    NaiveDate::parse_from_str(s, "%Y%m%d")
-        .map_err(|_| ParseError::InvalidDate(s.to_string()))
+    NaiveDate::parse_from_str(s, "%Y%m%d").map_err(|_| ParseError::InvalidDate(s.to_string()))
 }

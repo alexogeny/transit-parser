@@ -5,10 +5,7 @@ use transit_core::{AdapterError, DirectionId, Trip};
 use txc_parser::TxcDocument;
 
 /// Map TXC vehicle journeys to GTFS trips.
-pub fn map_trips(
-    doc: &TxcDocument,
-    ctx: &mut MappingContext,
-) -> Result<Vec<Trip>, AdapterError> {
+pub fn map_trips(doc: &TxcDocument, ctx: &mut MappingContext) -> Result<Vec<Trip>, AdapterError> {
     let mut trips = Vec::new();
 
     for vj in &doc.vehicle_journeys {
@@ -33,13 +30,14 @@ pub fn map_trips(
             .unwrap_or_else(|| vj.service_ref.clone());
 
         // Map direction
-        let direction_id = vj.direction.as_ref().and_then(|d| {
-            match d.to_lowercase().as_str() {
+        let direction_id = vj
+            .direction
+            .as_ref()
+            .and_then(|d| match d.to_lowercase().as_str() {
                 "outbound" | "out" => Some(DirectionId::Outbound),
                 "inbound" | "in" => Some(DirectionId::Inbound),
                 _ => None,
-            }
-        });
+            });
 
         let trip = Trip {
             id: trip_id,

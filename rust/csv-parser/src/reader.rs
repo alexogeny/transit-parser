@@ -113,7 +113,11 @@ impl CsvReader {
         Ok(CsvDocument { schema, rows })
     }
 
-    fn infer_schema(headers: &[String], records: &[csv::StringRecord], sample_size: usize) -> CsvSchema {
+    fn infer_schema(
+        headers: &[String],
+        records: &[csv::StringRecord],
+        sample_size: usize,
+    ) -> CsvSchema {
         let sample = &records[..records.len().min(sample_size)];
 
         let columns: Vec<ColumnDefinition> = headers

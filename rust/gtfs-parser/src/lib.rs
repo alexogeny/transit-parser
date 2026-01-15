@@ -12,8 +12,8 @@ pub use reader::{GtfsReader, ReadOptions};
 pub use types::*;
 pub use writer::{GtfsWriter, WriteOptions};
 
-use transit_core::{ParseError, TransitFeed};
 use std::path::Path;
+use transit_core::{ParseError, TransitFeed};
 
 /// A complete GTFS feed.
 #[derive(Debug, Clone, Default)]

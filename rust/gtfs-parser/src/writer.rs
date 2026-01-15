@@ -1,7 +1,7 @@
 //! GTFS feed writer.
 
 use csv::WriterBuilder;
-use std::fs::{self, File};
+use std::fs;
 use std::io::{Cursor, Write};
 use std::path::Path;
 use transit_core::{
@@ -162,7 +162,9 @@ impl GtfsWriter {
             .map_err(|e| ParseError::Csv(e.to_string()))?;
         }
 
-        let data = wtr.into_inner().map_err(|e| ParseError::Csv(e.to_string()))?;
+        let data = wtr
+            .into_inner()
+            .map_err(|e| ParseError::Csv(e.to_string()))?;
         String::from_utf8(data).map_err(|e| ParseError::Csv(e.to_string()))
     }
 
@@ -213,7 +215,9 @@ impl GtfsWriter {
             .map_err(|e| ParseError::Csv(e.to_string()))?;
         }
 
-        let data = wtr.into_inner().map_err(|e| ParseError::Csv(e.to_string()))?;
+        let data = wtr
+            .into_inner()
+            .map_err(|e| ParseError::Csv(e.to_string()))?;
         String::from_utf8(data).map_err(|e| ParseError::Csv(e.to_string()))
     }
 
@@ -250,15 +254,14 @@ impl GtfsWriter {
                 route.url.as_deref().unwrap_or(""),
                 route.color.as_deref().unwrap_or(""),
                 route.text_color.as_deref().unwrap_or(""),
-                &route
-                    .sort_order
-                    .map(|s| s.to_string())
-                    .unwrap_or_default(),
+                &route.sort_order.map(|s| s.to_string()).unwrap_or_default(),
             ])
             .map_err(|e| ParseError::Csv(e.to_string()))?;
         }
 
-        let data = wtr.into_inner().map_err(|e| ParseError::Csv(e.to_string()))?;
+        let data = wtr
+            .into_inner()
+            .map_err(|e| ParseError::Csv(e.to_string()))?;
         String::from_utf8(data).map_err(|e| ParseError::Csv(e.to_string()))
     }
 
@@ -309,7 +312,9 @@ impl GtfsWriter {
             .map_err(|e| ParseError::Csv(e.to_string()))?;
         }
 
-        let data = wtr.into_inner().map_err(|e| ParseError::Csv(e.to_string()))?;
+        let data = wtr
+            .into_inner()
+            .map_err(|e| ParseError::Csv(e.to_string()))?;
         String::from_utf8(data).map_err(|e| ParseError::Csv(e.to_string()))
     }
 
@@ -357,7 +362,9 @@ impl GtfsWriter {
             .map_err(|e| ParseError::Csv(e.to_string()))?;
         }
 
-        let data = wtr.into_inner().map_err(|e| ParseError::Csv(e.to_string()))?;
+        let data = wtr
+            .into_inner()
+            .map_err(|e| ParseError::Csv(e.to_string()))?;
         String::from_utf8(data).map_err(|e| ParseError::Csv(e.to_string()))
     }
 
@@ -399,7 +406,9 @@ impl GtfsWriter {
             .map_err(|e| ParseError::Csv(e.to_string()))?;
         }
 
-        let data = wtr.into_inner().map_err(|e| ParseError::Csv(e.to_string()))?;
+        let data = wtr
+            .into_inner()
+            .map_err(|e| ParseError::Csv(e.to_string()))?;
         String::from_utf8(data).map_err(|e| ParseError::Csv(e.to_string()))
     }
 
@@ -426,7 +435,9 @@ impl GtfsWriter {
             .map_err(|e| ParseError::Csv(e.to_string()))?;
         }
 
-        let data = wtr.into_inner().map_err(|e| ParseError::Csv(e.to_string()))?;
+        let data = wtr
+            .into_inner()
+            .map_err(|e| ParseError::Csv(e.to_string()))?;
         String::from_utf8(data).map_err(|e| ParseError::Csv(e.to_string()))
     }
 
@@ -463,7 +474,9 @@ impl GtfsWriter {
             }
         }
 
-        let data = wtr.into_inner().map_err(|e| ParseError::Csv(e.to_string()))?;
+        let data = wtr
+            .into_inner()
+            .map_err(|e| ParseError::Csv(e.to_string()))?;
         String::from_utf8(data).map_err(|e| ParseError::Csv(e.to_string()))
     }
 }

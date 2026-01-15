@@ -2,9 +2,8 @@
 
 use crate::models::*;
 use gtfs_parser::GtfsFeed;
-use pyo3::prelude::*;
 use pyo3::exceptions::PyIOError;
-use std::sync::Arc;
+use pyo3::prelude::*;
 
 /// Python wrapper for GTFS feed.
 ///
@@ -45,7 +44,7 @@ impl PyGtfsFeed {
     #[staticmethod]
     fn from_path(path: &str) -> PyResult<Self> {
         GtfsFeed::from_path(path)
-            .map(|inner| Self::from_inner(inner))
+            .map(Self::from_inner)
             .map_err(|e| PyIOError::new_err(e.to_string()))
     }
 
@@ -53,7 +52,7 @@ impl PyGtfsFeed {
     #[staticmethod]
     fn from_zip(path: &str) -> PyResult<Self> {
         GtfsFeed::from_zip(path)
-            .map(|inner| Self::from_inner(inner))
+            .map(Self::from_inner)
             .map_err(|e| PyIOError::new_err(e.to_string()))
     }
 
@@ -61,7 +60,7 @@ impl PyGtfsFeed {
     #[staticmethod]
     fn from_bytes(data: &[u8]) -> PyResult<Self> {
         GtfsFeed::from_bytes(data)
-            .map(|inner| Self::from_inner(inner))
+            .map(Self::from_inner)
             .map_err(|e| PyIOError::new_err(e.to_string()))
     }
 
@@ -163,10 +162,8 @@ impl PyGtfsFeed {
         if let Some(ref cached) = self.stops_cache {
             return Ok(cached.clone_ref(py));
         }
-        let list = pyo3::types::PyList::new(
-            py,
-            self.inner.feed.stops.iter().cloned().map(PyStop::from),
-        )?;
+        let list =
+            pyo3::types::PyList::new(py, self.inner.feed.stops.iter().cloned().map(PyStop::from))?;
         let cached = list.into();
         self.stops_cache = Some(Py::clone_ref(&cached, py));
         Ok(cached)
@@ -193,10 +190,8 @@ impl PyGtfsFeed {
         if let Some(ref cached) = self.trips_cache {
             return Ok(cached.clone_ref(py));
         }
-        let list = pyo3::types::PyList::new(
-            py,
-            self.inner.feed.trips.iter().cloned().map(PyTrip::from),
-        )?;
+        let list =
+            pyo3::types::PyList::new(py, self.inner.feed.trips.iter().cloned().map(PyTrip::from))?;
         let cached = list.into();
         self.trips_cache = Some(Py::clone_ref(&cached, py));
         Ok(cached)
@@ -210,7 +205,12 @@ impl PyGtfsFeed {
         }
         let list = pyo3::types::PyList::new(
             py,
-            self.inner.feed.stop_times.iter().cloned().map(PyStopTime::from),
+            self.inner
+                .feed
+                .stop_times
+                .iter()
+                .cloned()
+                .map(PyStopTime::from),
         )?;
         let cached = list.into();
         self.stop_times_cache = Some(Py::clone_ref(&cached, py));
@@ -225,7 +225,12 @@ impl PyGtfsFeed {
         }
         let list = pyo3::types::PyList::new(
             py,
-            self.inner.feed.calendars.iter().cloned().map(PyCalendar::from),
+            self.inner
+                .feed
+                .calendars
+                .iter()
+                .cloned()
+                .map(PyCalendar::from),
         )?;
         let cached = list.into();
         self.calendars_cache = Some(Py::clone_ref(&cached, py));
@@ -240,7 +245,12 @@ impl PyGtfsFeed {
         }
         let list = pyo3::types::PyList::new(
             py,
-            self.inner.feed.calendar_dates.iter().cloned().map(PyCalendarDate::from),
+            self.inner
+                .feed
+                .calendar_dates
+                .iter()
+                .cloned()
+                .map(PyCalendarDate::from),
         )?;
         let cached = list.into();
         self.calendar_dates_cache = Some(Py::clone_ref(&cached, py));

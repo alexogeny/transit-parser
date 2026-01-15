@@ -1,9 +1,7 @@
 //! Python-exposed transit data models.
 
 use pyo3::prelude::*;
-use transit_core::{
-    Agency, Calendar, CalendarDate, Route, Shape, ShapePoint, Stop, StopTime, Trip,
-};
+use transit_core::{Agency, Calendar, CalendarDate, Route, Shape, Stop, StopTime, Trip};
 
 /// Python wrapper for Agency.
 #[pyclass(name = "Agency")]
@@ -43,10 +41,7 @@ impl PyAgency {
     }
 
     fn __repr__(&self) -> String {
-        format!(
-            "Agency(id={:?}, name={:?})",
-            self.inner.id, self.inner.name
-        )
+        format!("Agency(id={:?}, name={:?})", self.inner.id, self.inner.name)
     }
 }
 
@@ -306,8 +301,7 @@ impl PyCalendarDate {
     fn __repr__(&self) -> String {
         format!(
             "CalendarDate(service_id={:?}, date={:?})",
-            self.inner.service_id,
-            self.inner.date
+            self.inner.service_id, self.inner.date
         )
     }
 }

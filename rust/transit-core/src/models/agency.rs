@@ -31,7 +31,11 @@ pub struct Agency {
 }
 
 impl Agency {
-    pub fn new(name: impl Into<String>, url: impl Into<String>, timezone: impl Into<String>) -> Self {
+    pub fn new(
+        name: impl Into<String>,
+        url: impl Into<String>,
+        timezone: impl Into<String>,
+    ) -> Self {
         Self {
             id: None,
             name: name.into(),

@@ -5,10 +5,7 @@ use transit_core::{AdapterError, Shape, ShapePoint};
 use txc_parser::TxcDocument;
 
 /// Generate GTFS shapes from TXC route sections.
-pub fn map_shapes(
-    doc: &TxcDocument,
-    ctx: &mut MappingContext,
-) -> Result<Vec<Shape>, AdapterError> {
+pub fn map_shapes(doc: &TxcDocument, ctx: &mut MappingContext) -> Result<Vec<Shape>, AdapterError> {
     let mut shapes = Vec::new();
 
     for route_section in &doc.route_sections {

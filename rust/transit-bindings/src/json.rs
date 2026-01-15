@@ -1,8 +1,8 @@
 //! JSON Python bindings.
 
 use json_parser::JsonDocument;
-use pyo3::prelude::*;
 use pyo3::exceptions::PyIOError;
+use pyo3::prelude::*;
 
 /// Python wrapper for JSON document.
 #[pyclass(name = "JsonDocument")]
@@ -82,18 +82,16 @@ impl PyJsonDocument {
 
     /// Get a value by JSON pointer.
     fn pointer(&self, path: &str) -> PyResult<Option<PyObject>> {
-        Python::with_gil(|py| {
-            match self.inner.pointer(path) {
-                Some(value) => {
-                    let json_str = serde_json::to_string(value)
-                        .map_err(|e| PyIOError::new_err(e.to_string()))?;
+        Python::with_gil(|py| match self.inner.pointer(path) {
+            Some(value) => {
+                let json_str =
+                    serde_json::to_string(value).map_err(|e| PyIOError::new_err(e.to_string()))?;
 
-                    let json_module = py.import("json")?;
-                    let result = json_module.call_method1("loads", (json_str,))?;
-                    Ok(Some(result.into()))
-                }
-                None => Ok(None),
+                let json_module = py.import("json")?;
+                let result = json_module.call_method1("loads", (json_str,))?;
+                Ok(Some(result.into()))
             }
+            None => Ok(None),
         })
     }
 

@@ -2,8 +2,8 @@
 
 use crate::gtfs::PyGtfsFeed;
 use crate::txc::PyTxcDocument;
-use pyo3::prelude::*;
 use pyo3::exceptions::PyRuntimeError;
+use pyo3::prelude::*;
 use txc_gtfs_adapter::{ConversionOptions, ConversionStats, TxcToGtfsConverter, UkRegion};
 
 /// Python wrapper for conversion options.
@@ -229,4 +229,3 @@ impl PyTxcToGtfsConverter {
         "TxcToGtfsConverter()".to_string()
     }
 }
-
