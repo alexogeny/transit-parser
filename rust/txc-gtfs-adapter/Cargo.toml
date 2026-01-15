@@ -1,0 +1,16 @@
+[package]
+name = "txc-gtfs-adapter"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+description = "TXC to GTFS conversion adapter"
+
+[dependencies]
+transit-core.workspace = true
+gtfs-parser.workspace = true
+txc-parser.workspace = true
+serde.workspace = true
+chrono.workspace = true
+thiserror.workspace = true
+rayon.workspace = true

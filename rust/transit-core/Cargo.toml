@@ -1,0 +1,12 @@
+[package]
+name = "transit-core"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+description = "Core data models and traits for transit data parsing"
+
+[dependencies]
+serde.workspace = true
+chrono.workspace = true
+thiserror.workspace = true

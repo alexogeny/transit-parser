@@ -1,0 +1,15 @@
+[package]
+name = "csv-parser"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+description = "Generic CSV parser with schema inference"
+
+[dependencies]
+transit-core.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+csv.workspace = true
+chrono.workspace = true
+thiserror.workspace = true

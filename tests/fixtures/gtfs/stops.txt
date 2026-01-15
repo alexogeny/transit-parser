@@ -1,0 +1,6 @@
+stop_id,stop_code,stop_name,stop_desc,stop_lat,stop_lon,zone_id,stop_url,location_type,parent_station
+stop_1,S1,Main Street Station,Main downtown station,40.712776,-74.005974,zone_a,,0,
+stop_2,S2,Oak Avenue,Near the park,40.714776,-74.007974,zone_a,,0,
+stop_3,S3,Pine Road,Residential area,40.716776,-74.009974,zone_b,,0,
+stop_4,S4,Central Hub,Major transfer point,40.718776,-74.011974,zone_a,,1,
+stop_5,S5,Central Hub - Platform 1,Platform 1,40.718776,-74.011974,zone_a,,0,stop_4

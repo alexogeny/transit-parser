@@ -1,0 +1,49 @@
+# Python
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+.venv/
+
+# Rust
+target/
+Cargo.lock
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+
+# Build artifacts
+*.so
+*.dylib
+*.dll
+
+# Transit data files (don't commit real transit data)
+gtfs_output/
+output/
+*.zip
+!tests/fixtures/**
+
+# Large XML data files (keep test fixtures only)
+*.xml
+!tests/fixtures/**/*.xml
+
+# MkDocs build output
+site/
+
+# Claude artifacts
+.claude/

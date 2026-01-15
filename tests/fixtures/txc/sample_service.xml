@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TransXChange xmlns="http://www.transxchange.org.uk/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" CreationDateTime="2025-01-01T00:00:00" ModificationDateTime="2025-01-01T00:00:00" Modification="new" RevisionNumber="1" FileName="sample_service.xml" SchemaVersion="2.4" xsi:schemaLocation="http://www.transxchange.org.uk/ http://www.transxchange.org.uk/schema/2.4/TransXChange_general.xsd">
+  <Operators>
+    <Operator id="OP1">
+      <NationalOperatorCode>SMPL</NationalOperatorCode>
+      <OperatorCode>SMPL</OperatorCode>
+      <OperatorShortName>Sample Bus Co</OperatorShortName>
+      <OperatorNameOnLicence>Sample Bus Company Ltd</OperatorNameOnLicence>
+      <TradingName>Sample Bus</TradingName>
+    </Operator>
+  </Operators>
+
+  <Services>
+    <Service>
+      <ServiceCode>SVC001</ServiceCode>
+      <Lines>
+        <Line id="LINE1">
+          <LineName>1</LineName>
+        </Line>
+      </Lines>
+      <OperatingPeriod>
+        <StartDate>2025-01-01</StartDate>
+        <EndDate>2025-12-31</EndDate>
+      </OperatingPeriod>
+      <OperatingProfile>
+        <RegularDayType>
+          <DaysOfWeek>
+            <MondayToFriday/>
+          </DaysOfWeek>
+        </RegularDayType>
+      </OperatingProfile>
+      <RegisteredOperatorRef>OP1</RegisteredOperatorRef>
+      <PublicUse>true</PublicUse>
+      <Description>Town Centre to Station</Description>
+      <StandardService>
+        <Origin>Town Centre</Origin>
+        <Destination>Railway Station</Destination>
+        <JourneyPattern id="JP1">
+          <Direction>outbound</Direction>
+          <RouteRef>RT1</RouteRef>
+          <JourneyPatternSectionRefs>
+            <JourneyPatternSectionRef>JPS1</JourneyPatternSectionRef>
+          </JourneyPatternSectionRefs>
+        </JourneyPattern>
+        <JourneyPattern id="JP2">
+          <Direction>inbound</Direction>
+          <RouteRef>RT2</RouteRef>
+          <JourneyPatternSectionRefs>
+            <JourneyPatternSectionRef>JPS2</JourneyPatternSectionRef>
+          </JourneyPatternSectionRefs>
+        </JourneyPattern>
+      </StandardService>
+    </Service>
+  </Services>
+
+  <StopPoints>
+    <AnnotatedStopPointRef>
+      <StopPointRef>0100BRP90310</StopPointRef>
+      <CommonName>Town Centre</CommonName>
+      <LocalityName>Sample Town</LocalityName>
+    </AnnotatedStopPointRef>
+    <AnnotatedStopPointRef>
+      <StopPointRef>0100BRP90311</StopPointRef>
+      <CommonName>High Street</CommonName>
+      <LocalityName>Sample Town</LocalityName>
+    </AnnotatedStopPointRef>
+    <AnnotatedStopPointRef>
+      <StopPointRef>0100BRP90312</StopPointRef>
+      <CommonName>Library</CommonName>
+      <LocalityName>Sample Town</LocalityName>
+    </AnnotatedStopPointRef>
+    <AnnotatedStopPointRef>
+      <StopPointRef>0100BRP90313</StopPointRef>
+      <CommonName>Railway Station</CommonName>
+      <LocalityName>Sample Town</LocalityName>
+    </AnnotatedStopPointRef>
+  </StopPoints>
+
+  <RouteSections>
+    <RouteSection id="RS1">
+      <RouteLink id="RL1">
+        <From>
+          <StopPointRef>0100BRP90310</StopPointRef>
+        </From>
+        <To>
+          <StopPointRef>0100BRP90311</StopPointRef>
+        </To>
+        <Distance>500</Distance>
+      </RouteLink>
+      <RouteLink id="RL2">
+        <From>
+          <StopPointRef>0100BRP90311</StopPointRef>
+        </From>
+        <To>
+          <StopPointRef>0100BRP90312</StopPointRef>
+        </To>
+        <Distance>300</Distance>
+      </RouteLink>
+      <RouteLink id="RL3">
+        <From>
+          <StopPointRef>0100BRP90312</StopPointRef>
+        </From>
+        <To>
+          <StopPointRef>0100BRP90313</StopPointRef>
+        </To>
+        <Distance>800</Distance>
+      </RouteLink>
+    </RouteSection>
+    <RouteSection id="RS2">
+      <RouteLink id="RL4">
+        <From>
+          <StopPointRef>0100BRP90313</StopPointRef>
+        </From>
+        <To>
+          <StopPointRef>0100BRP90312</StopPointRef>
+        </To>
+        <Distance>800</Distance>
+      </RouteLink>
+      <RouteLink id="RL5">
+        <From>
+          <StopPointRef>0100BRP90312</StopPointRef>
+        </From>
+        <To>
+          <StopPointRef>0100BRP90311</StopPointRef>
+        </To>
+        <Distance>300</Distance>
+      </RouteLink>
+      <RouteLink id="RL6">
+        <From>
+          <StopPointRef>0100BRP90311</StopPointRef>
+        </From>
+        <To>
+          <StopPointRef>0100BRP90310</StopPointRef>
+        </To>
+        <Distance>500</Distance>
+      </RouteLink>
+    </RouteSection>
+  </RouteSections>
+
+  <Routes>
+    <Route id="RT1">
+      <Description>Town Centre to Station</Description>
+      <RouteSectionRef>RS1</RouteSectionRef>
+    </Route>
+    <Route id="RT2">
+      <Description>Station to Town Centre</Description>
+      <RouteSectionRef>RS2</RouteSectionRef>
+    </Route>
+  </Routes>
+
+  <JourneyPatternSections>
+    <JourneyPatternSection id="JPS1">
+      <JourneyPatternTimingLink id="JPTL1">
+        <From>
+          <StopPointRef>0100BRP90310</StopPointRef>
+          <TimingStatus>principalTimingPoint</TimingStatus>
+        </From>
+        <To>
+          <StopPointRef>0100BRP90311</StopPointRef>
+          <TimingStatus>otherPoint</TimingStatus>
+        </To>
+        <RouteLinkRef>RL1</RouteLinkRef>
+        <RunTime>PT3M</RunTime>
+      </JourneyPatternTimingLink>
+      <JourneyPatternTimingLink id="JPTL2">
+        <From>
+          <StopPointRef>0100BRP90311</StopPointRef>
+          <TimingStatus>otherPoint</TimingStatus>
+        </From>
+        <To>
+          <StopPointRef>0100BRP90312</StopPointRef>
+          <TimingStatus>otherPoint</TimingStatus>
+        </To>
+        <RouteLinkRef>RL2</RouteLinkRef>
+        <RunTime>PT2M</RunTime>
+      </JourneyPatternTimingLink>
+      <JourneyPatternTimingLink id="JPTL3">
+        <From>
+          <StopPointRef>0100BRP90312</StopPointRef>
+          <TimingStatus>otherPoint</TimingStatus>
+        </From>
+        <To>
+          <StopPointRef>0100BRP90313</StopPointRef>
+          <TimingStatus>principalTimingPoint</TimingStatus>
+        </To>
+        <RouteLinkRef>RL3</RouteLinkRef>
+        <RunTime>PT5M</RunTime>
+      </JourneyPatternTimingLink>
+    </JourneyPatternSection>
+    <JourneyPatternSection id="JPS2">
+      <JourneyPatternTimingLink id="JPTL4">
+        <From>
+          <StopPointRef>0100BRP90313</StopPointRef>
+          <TimingStatus>principalTimingPoint</TimingStatus>
+        </From>
+        <To>
+          <StopPointRef>0100BRP90312</StopPointRef>
+          <TimingStatus>otherPoint</TimingStatus>
+        </To>
+        <RouteLinkRef>RL4</RouteLinkRef>
+        <RunTime>PT5M</RunTime>
+      </JourneyPatternTimingLink>
+      <JourneyPatternTimingLink id="JPTL5">
+        <From>
+          <StopPointRef>0100BRP90312</StopPointRef>
+          <TimingStatus>otherPoint</TimingStatus>
+        </From>
+        <To>
+          <StopPointRef>0100BRP90311</StopPointRef>
+          <TimingStatus>otherPoint</TimingStatus>
+        </To>
+        <RouteLinkRef>RL5</RouteLinkRef>
+        <RunTime>PT2M</RunTime>
+      </JourneyPatternTimingLink>
+      <JourneyPatternTimingLink id="JPTL6">
+        <From>
+          <StopPointRef>0100BRP90311</StopPointRef>
+          <TimingStatus>otherPoint</TimingStatus>
+        </From>
+        <To>
+          <StopPointRef>0100BRP90310</StopPointRef>
+          <TimingStatus>principalTimingPoint</TimingStatus>
+        </To>
+        <RouteLinkRef>RL6</RouteLinkRef>
+        <RunTime>PT3M</RunTime>
+      </JourneyPatternTimingLink>
+    </JourneyPatternSection>
+  </JourneyPatternSections>
+
+  <VehicleJourneys>
+    <VehicleJourney>
+      <OperatorRef>OP1</OperatorRef>
+      <VehicleJourneyCode>VJ1</VehicleJourneyCode>
+      <ServiceRef>SVC001</ServiceRef>
+      <LineRef>LINE1</LineRef>
+      <JourneyPatternRef>JP1</JourneyPatternRef>
+      <DepartureTime>07:00:00</DepartureTime>
+    </VehicleJourney>
+    <VehicleJourney>
+      <OperatorRef>OP1</OperatorRef>
+      <VehicleJourneyCode>VJ2</VehicleJourneyCode>
+      <ServiceRef>SVC001</ServiceRef>
+      <LineRef>LINE1</LineRef>
+      <JourneyPatternRef>JP1</JourneyPatternRef>
+      <DepartureTime>08:00:00</DepartureTime>
+    </VehicleJourney>
+    <VehicleJourney>
+      <OperatorRef>OP1</OperatorRef>
+      <VehicleJourneyCode>VJ3</VehicleJourneyCode>
+      <ServiceRef>SVC001</ServiceRef>
+      <LineRef>LINE1</LineRef>
+      <JourneyPatternRef>JP1</JourneyPatternRef>
+      <DepartureTime>09:00:00</DepartureTime>
+    </VehicleJourney>
+    <VehicleJourney>
+      <OperatorRef>OP1</OperatorRef>
+      <VehicleJourneyCode>VJ4</VehicleJourneyCode>
+      <ServiceRef>SVC001</ServiceRef>
+      <LineRef>LINE1</LineRef>
+      <JourneyPatternRef>JP2</JourneyPatternRef>
+      <DepartureTime>07:30:00</DepartureTime>
+    </VehicleJourney>
+    <VehicleJourney>
+      <OperatorRef>OP1</OperatorRef>
+      <VehicleJourneyCode>VJ5</VehicleJourneyCode>
+      <ServiceRef>SVC001</ServiceRef>
+      <LineRef>LINE1</LineRef>
+      <JourneyPatternRef>JP2</JourneyPatternRef>
+      <DepartureTime>08:30:00</DepartureTime>
+    </VehicleJourney>
+  </VehicleJourneys>
+</TransXChange>

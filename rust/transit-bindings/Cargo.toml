@@ -1,0 +1,27 @@
+[package]
+name = "transit-bindings"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+description = "PyO3 Python bindings for transit-parser"
+
+[lib]
+name = "_core"
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+pyo3.workspace = true
+transit-core.workspace = true
+gtfs-parser.workspace = true
+txc-parser.workspace = true
+txc-gtfs-adapter.workspace = true
+csv-parser.workspace = true
+json-parser.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+chrono.workspace = true
+
+[features]
+default = []
+extension-module = ["pyo3/extension-module"]

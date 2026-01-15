@@ -1,0 +1,72 @@
+[build-system]
+requires = ["maturin>=1.7,<2.0"]
+build-backend = "maturin"
+
+[project]
+name = "transit-parser"
+version = "0.1.0"
+description = "High-performance transit data parser with TXC to GTFS conversion"
+readme = "README.md"
+license = { text = "MIT OR Apache-2.0" }
+requires-python = ">=3.9"
+authors = [
+    { name = "alexogeny", email = "alexogeny@gmail.com" }
+]
+keywords = ["gtfs", "transxchange", "txc", "transit", "parsing", "transport"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Programming Language :: Rust",
+    "Topic :: Scientific/Engineering :: GIS",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+dependencies = []
+
+[project.urls]
+Homepage = "https://github.com/alexogeny/transit-parser"
+Documentation = "https://alexogeny.github.io/transit-parser/"
+Repository = "https://github.com/alexogeny/transit-parser"
+Issues = "https://github.com/alexogeny/transit-parser/issues"
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "pytest-benchmark>=4.0",
+    "mypy>=1.10",
+    "ruff>=0.6",
+]
+
+[tool.maturin]
+python-source = "python"
+module-name = "transit_parser._core"
+manifest-path = "rust/transit-bindings/Cargo.toml"
+features = ["pyo3/extension-module"]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.0",
+    "pytest-benchmark>=4.0",
+    "mypy>=1.10",
+    "ruff>=0.6",
+    "mkdocs>=1.6.1",
+    "mkdocs-material>=9.7.1",
+    "mkdocstrings>=0.30.1",
+    "mkdocstrings-python>=1.18.2",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py39"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "W", "UP"]
+
+[tool.mypy]
+python_version = "3.9"
+strict = true

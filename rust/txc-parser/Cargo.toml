@@ -1,0 +1,19 @@
+[package]
+name = "txc-parser"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+description = "TransXChange (TXC) XML format parser"
+
+[dependencies]
+transit-core.workspace = true
+serde.workspace = true
+quick-xml.workspace = true
+chrono.workspace = true
+thiserror.workspace = true
+zip.workspace = true
+
+[[bin]]
+name = "bench_txc"
+path = "src/bin/bench_txc.rs"

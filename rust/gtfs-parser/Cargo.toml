@@ -1,0 +1,15 @@
+[package]
+name = "gtfs-parser"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+description = "GTFS Static format parser"
+
+[dependencies]
+transit-core.workspace = true
+serde.workspace = true
+csv.workspace = true
+chrono.workspace = true
+thiserror.workspace = true
+zip.workspace = true

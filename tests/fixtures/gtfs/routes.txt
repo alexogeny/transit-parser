@@ -1,0 +1,4 @@
+route_id,agency_id,route_short_name,route_long_name,route_desc,route_type,route_url,route_color,route_text_color
+route_1,agency_1,1,Main Line,Primary north-south route,3,,,
+route_2,agency_1,2,Crosstown,East-west connector,3,,FF0000,FFFFFF
+route_3,agency_2,A,Express,Fast service,1,,0000FF,FFFFFF
