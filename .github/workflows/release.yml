@@ -51,3 +51,9 @@ jobs:
           generate_release_notes: true
           draft: false
           prerelease: false
+
+      - name: Trigger publish workflow
+        if: steps.check.outputs.exists == 'false'
+        run: gh workflow run publish.yml
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
