@@ -383,3 +383,297 @@ class TxcToGtfsConverter:
 
     def convert(self, document: TxcDocument) -> ConversionResult: ...
     def convert_batch(self, documents: list[TxcDocument]) -> ConversionResult: ...
+
+# Schedule
+
+class ScheduleRow:
+    """A single row in a schedule file.
+
+    Represents one movement or activity: a revenue trip, deadhead,
+    break, or relief.
+    """
+
+    def __init__(self) -> None: ...
+
+    @property
+    def run_number(self) -> str | None: ...
+    @run_number.setter
+    def run_number(self, value: str | None) -> None: ...
+
+    @property
+    def block(self) -> str | None: ...
+    @block.setter
+    def block(self, value: str | None) -> None: ...
+
+    @property
+    def start_place(self) -> str | None: ...
+    @start_place.setter
+    def start_place(self, value: str | None) -> None: ...
+
+    @property
+    def end_place(self) -> str | None: ...
+    @end_place.setter
+    def end_place(self, value: str | None) -> None: ...
+
+    @property
+    def start_time(self) -> str | None: ...
+    @start_time.setter
+    def start_time(self, value: str | None) -> None: ...
+
+    @property
+    def end_time(self) -> str | None: ...
+    @end_time.setter
+    def end_time(self, value: str | None) -> None: ...
+
+    @property
+    def trip_id(self) -> str | None: ...
+    @trip_id.setter
+    def trip_id(self, value: str | None) -> None: ...
+
+    @property
+    def depot(self) -> str | None: ...
+    @depot.setter
+    def depot(self, value: str | None) -> None: ...
+
+    @property
+    def vehicle_class(self) -> str | None: ...
+    @property
+    def vehicle_type(self) -> str | None: ...
+    @property
+    def start_lat(self) -> float | None: ...
+    @property
+    def start_lon(self) -> float | None: ...
+    @property
+    def end_lat(self) -> float | None: ...
+    @property
+    def end_lon(self) -> float | None: ...
+    @property
+    def route_shape_id(self) -> str | None: ...
+    @property
+    def row_type(self) -> str: ...
+    @property
+    def duty_id(self) -> str | None: ...
+    @property
+    def shift_id(self) -> str | None: ...
+
+    def is_revenue(self) -> bool:
+        """Check if this is a revenue (passenger-carrying) trip."""
+        ...
+
+    def is_deadhead(self) -> bool:
+        """Check if this is a deadhead movement."""
+        ...
+
+    def duration_seconds(self) -> int | None:
+        """Get duration in seconds."""
+        ...
+
+
+class Schedule:
+    """A transit schedule containing rows, blocks, and duties."""
+
+    def __init__(self) -> None: ...
+
+    @staticmethod
+    def from_csv(path: str) -> Schedule:
+        """Load a schedule from a CSV file."""
+        ...
+
+    @staticmethod
+    def from_csv_string(csv_str: str) -> Schedule:
+        """Load a schedule from a CSV string."""
+        ...
+
+    @staticmethod
+    def from_csv_with_mapping(
+        path: str,
+        column_mapping: dict[str, str] | None = None,
+    ) -> Schedule:
+        """Load a schedule with custom column mapping."""
+        ...
+
+    def __len__(self) -> int: ...
+
+    @property
+    def rows(self) -> list[ScheduleRow]: ...
+
+    @property
+    def revenue_trip_count(self) -> int: ...
+
+    def block_ids(self) -> list[str]:
+        """Get unique block IDs."""
+        ...
+
+    def run_numbers(self) -> list[str]:
+        """Get unique run numbers."""
+        ...
+
+    def depots(self) -> list[str]:
+        """Get unique depot codes."""
+        ...
+
+    def trip_ids(self) -> list[str]:
+        """Get unique trip IDs."""
+        ...
+
+    def summary(self) -> dict[str, int]:
+        """Get summary statistics."""
+        ...
+
+    def validate(
+        self,
+        gtfs: GtfsFeed,
+        config: ValidationConfig | None = None,
+    ) -> ValidationResult:
+        """Validate the schedule against GTFS data."""
+        ...
+
+    def validate_structure(
+        self,
+        config: ValidationConfig | None = None,
+    ) -> ValidationResult:
+        """Validate schedule structure (without GTFS)."""
+        ...
+
+    def infer_deadheads(
+        self,
+        gtfs: GtfsFeed | None = None,
+        default_depot: str | None = None,
+    ) -> DeadheadInferenceResult:
+        """Infer missing deadheads."""
+        ...
+
+    def to_csv(
+        self,
+        path: str,
+        columns: list[str] | None = None,
+        preset: str | None = None,
+    ) -> None:
+        """Export to CSV file.
+
+        Args:
+            path: Output file path.
+            columns: Custom column list to export.
+            preset: Export preset name (default, minimal, extended,
+                    optibus, hastus, gtfs_block).
+        """
+        ...
+
+    def to_csv_string(
+        self,
+        columns: list[str] | None = None,
+        preset: str | None = None,
+    ) -> str:
+        """Export to CSV string."""
+        ...
+
+
+class ValidationConfig:
+    """Configuration for schedule validation."""
+
+    def __init__(
+        self,
+        gtfs_compliance: str | None = None,
+        min_layover_seconds: int | None = None,
+        max_trip_duration_seconds: int | None = None,
+        max_duty_length_seconds: int | None = None,
+        max_continuous_driving_seconds: int | None = None,
+        min_break_duration_seconds: int | None = None,
+        time_tolerance_seconds: int | None = None,
+        validate_block_continuity: bool | None = None,
+        validate_duty_constraints: bool | None = None,
+        generate_warnings: bool | None = None,
+    ) -> None:
+        """Create validation config.
+
+        Args:
+            gtfs_compliance: Compliance level (strict, standard, lenient).
+            min_layover_seconds: Minimum time between trips (default: 300).
+            max_trip_duration_seconds: Maximum trip duration (default: 14400).
+            max_duty_length_seconds: Maximum duty length (default: 32400).
+            max_continuous_driving_seconds: Max driving before break (default: 16200).
+            min_break_duration_seconds: Minimum break length (default: 1800).
+            time_tolerance_seconds: Allowed deviation from GTFS times (default: 60).
+            validate_block_continuity: Whether to validate block continuity.
+            validate_duty_constraints: Whether to validate duty constraints.
+            generate_warnings: Whether to generate warnings.
+        """
+        ...
+
+    @staticmethod
+    def strict() -> ValidationConfig:
+        """Create a strict validation config."""
+        ...
+
+    @staticmethod
+    def lenient() -> ValidationConfig:
+        """Create a lenient validation config."""
+        ...
+
+
+class ValidationResult:
+    """Result of schedule validation."""
+
+    @property
+    def is_valid(self) -> bool:
+        """Check if validation passed (no errors)."""
+        ...
+
+    @property
+    def error_count(self) -> int:
+        """Get the number of errors."""
+        ...
+
+    @property
+    def warning_count(self) -> int:
+        """Get the number of warnings."""
+        ...
+
+    @property
+    def errors(self) -> list[dict[str, str]]:
+        """Get all errors as dicts with code, category, message, context."""
+        ...
+
+    @property
+    def warnings(self) -> list[dict[str, str]]:
+        """Get all warnings as dicts with code, category, message, context."""
+        ...
+
+    @property
+    def rows_validated(self) -> int:
+        """Get number of rows validated."""
+        ...
+
+    @property
+    def blocks_validated(self) -> int:
+        """Get number of blocks validated."""
+        ...
+
+
+class DeadheadInferenceResult:
+    """Result of deadhead inference."""
+
+    @property
+    def pull_out_count(self) -> int:
+        """Number of inferred pull-outs."""
+        ...
+
+    @property
+    def pull_in_count(self) -> int:
+        """Number of inferred pull-ins."""
+        ...
+
+    @property
+    def interlining_count(self) -> int:
+        """Number of inferred interlinings."""
+        ...
+
+    @property
+    def total_count(self) -> int:
+        """Total count of inferred deadheads."""
+        ...
+
+    @property
+    def incomplete_blocks(self) -> list[str]:
+        """Blocks that couldn't have deadheads inferred."""
+        ...

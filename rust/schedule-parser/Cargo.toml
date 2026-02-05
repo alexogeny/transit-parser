@@ -1,0 +1,18 @@
+[package]
+name = "schedule-parser"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+description = "Schedule parsing, validation, and generation for transit data"
+
+[dependencies]
+serde.workspace = true
+csv.workspace = true
+chrono.workspace = true
+thiserror.workspace = true
+transit-core = { path = "../transit-core" }
+gtfs-parser = { path = "../gtfs-parser" }
+
+[dev-dependencies]
+tempfile = "3.14"

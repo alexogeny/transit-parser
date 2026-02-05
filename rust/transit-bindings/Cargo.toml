@@ -18,6 +18,7 @@ txc-parser.workspace = true
 txc-gtfs-adapter.workspace = true
 csv-parser.workspace = true
 json-parser.workspace = true
+schedule-parser.workspace = true
 serde.workspace = true
 serde_json.workspace = true
 chrono.workspace = true

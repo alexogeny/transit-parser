@@ -7,6 +7,8 @@ High-performance Python+Rust library for parsing transit data formats with TXC t
 - **GTFS Static** - Parse and write GTFS feeds (CSV-based)
 - **TransXChange (TXC)** - Parse UK XML transit format
 - **TXC to GTFS** - Convert TransXChange to GTFS
+- **Schedule Validation** - Validate operational schedules against GTFS
+- **Deadhead Inference** - Infer missing pull-out, pull-in, and interlining movements
 - **Generic CSV/JSON** - Parse any CSV/JSON with schema inference
 
 ## Installation
@@ -162,6 +164,35 @@ data = doc.root
 value = doc.pointer("/data/items/0/name")
 ```
 
+### Schedule Validation
+
+```python
+from transit_parser import GtfsFeed, Schedule, ValidationConfig
+
+# Load GTFS and schedule
+gtfs = GtfsFeed.from_path("gtfs/")
+schedule = Schedule.from_csv("schedule.csv")
+
+# Validate with custom rules
+config = ValidationConfig(
+    gtfs_compliance="standard",
+    min_layover_seconds=300,
+    max_duty_length_seconds=32400,
+)
+result = schedule.validate(gtfs, config)
+
+if not result.is_valid:
+    for error in result.errors:
+        print(f"Error: {error['message']}")
+
+# Infer missing deadheads
+inference = schedule.infer_deadheads(gtfs, default_depot="MAIN")
+print(f"Inferred {inference.total_count} deadheads")
+
+# Export
+schedule.to_csv("output.csv", preset="optibus")
+```
+
 ## Project Structure
 
 ```
@@ -173,6 +204,7 @@ parser/
 │   ├── gtfs-parser/        # GTFS Static parser
 │   ├── txc-parser/         # TransXChange parser
 │   ├── txc-gtfs-adapter/   # TXC→GTFS conversion
+│   ├── schedule-parser/    # Schedule validation & generation
 │   ├── csv-parser/         # Generic CSV parser
 │   ├── json-parser/        # Generic JSON parser
 │   └── transit-bindings/   # PyO3 Python bindings

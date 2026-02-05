@@ -13,6 +13,8 @@
 - 🔍 **Filtering API** - Query by route, stop, date, and more
 - 📊 **Lazy Loading** - Defer parsing until you need the data
 - 🐼 **DataFrame Support** - Optional pandas integration
+- ✅ **Schedule Validation** - Validate operational schedules against GTFS
+- 🚌 **Deadhead Inference** - Infer pull-out, pull-in, and interlining movements
 
 ## Quick Example
 
@@ -65,3 +67,4 @@ uv add transit-parser
 - [Quick Start Guide](getting-started/quickstart.md) - Get up and running in 5 minutes
 - [API Reference](api/index.md) - Detailed API documentation
 - [Filtering Guide](guide/filtering.md) - Learn to query your data
+- [Schedule Validation](guide/schedule.md) - Validate operational schedules

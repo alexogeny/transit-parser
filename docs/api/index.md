@@ -18,6 +18,14 @@ This section provides detailed API documentation for all transit-parser modules.
 
 - [GtfsFilter](filtering.md#gtfsfilter) - Filtering and querying API
 
+### Schedule
+
+- [Schedule](schedule.md#schedule) - Schedule container
+- [ScheduleRow](schedule.md#schedulerow) - Individual schedule row
+- [ValidationConfig](schedule.md#validationconfig) - Validation settings
+- [ValidationResult](schedule.md#validationresult) - Validation results
+- [DeadheadInferenceResult](schedule.md#deadheadinferenceresult) - Deadhead inference results
+
 ## Data Models
 
 All GTFS entities are exposed as Python classes:
@@ -54,6 +62,11 @@ transit_parser
 ├── ConversionOptions
 ├── ConversionResult
 ├── ConversionStats
+├── Schedule
+├── ScheduleRow
+├── ValidationConfig
+├── ValidationResult
+├── DeadheadInferenceResult
 ├── Agency, Stop, Route, Trip, StopTime, Calendar, CalendarDate, Shape
 ├── TransitParserError, GtfsError, TxcError, ...
 ├── filtering

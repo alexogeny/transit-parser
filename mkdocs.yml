@@ -72,10 +72,12 @@ nav:
     - Parsing TXC: guide/txc.md
     - TXC to GTFS Conversion: guide/conversion.md
     - Filtering Data: guide/filtering.md
+    - Schedule Validation: guide/schedule.md
   - API Reference:
     - Overview: api/index.md
     - GtfsFeed: api/gtfs.md
     - TxcDocument: api/txc.md
     - Filtering: api/filtering.md
+    - Schedule: api/schedule.md
     - Exceptions: api/exceptions.md
   - Performance: performance.md

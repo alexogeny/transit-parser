@@ -8,6 +8,7 @@ mod gtfs;
 mod json;
 mod lazy_gtfs;
 mod models;
+mod schedule;
 mod txc;
 
 /// Transit data parser Python module.
@@ -41,6 +42,13 @@ fn _core(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_class::<adapters::PyConversionOptions>()?;
     m.add_class::<adapters::PyConversionResult>()?;
     m.add_class::<adapters::PyConversionStats>()?;
+
+    // Schedule functions
+    m.add_class::<schedule::PySchedule>()?;
+    m.add_class::<schedule::PyScheduleRow>()?;
+    m.add_class::<schedule::PyValidationConfig>()?;
+    m.add_class::<schedule::PyValidationResult>()?;
+    m.add_class::<schedule::PyDeadheadInferenceResult>()?;
 
     Ok(())
 }

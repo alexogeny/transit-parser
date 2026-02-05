@@ -69,6 +69,12 @@ from transit_parser._core import (
     TxcDocument,
     # Adapters
     TxcToGtfsConverter,
+    # Schedule
+    Schedule,
+    ScheduleRow,
+    ValidationConfig,
+    ValidationResult,
+    DeadheadInferenceResult,
 )
 
 # Import exceptions
@@ -129,4 +135,10 @@ __all__ = [
     "CalendarConversionError",
     "FilterError",
     "InvalidDateError",
+    # Schedule
+    "Schedule",
+    "ScheduleRow",
+    "ValidationConfig",
+    "ValidationResult",
+    "DeadheadInferenceResult",
 ]
