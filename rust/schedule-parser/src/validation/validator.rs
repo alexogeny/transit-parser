@@ -93,12 +93,18 @@ impl ValidationResult {
 
     /// Get errors by category.
     pub fn errors_by_category(&self, category: ErrorCategory) -> Vec<&ValidationError> {
-        self.errors.iter().filter(|e| e.category == category).collect()
+        self.errors
+            .iter()
+            .filter(|e| e.category == category)
+            .collect()
     }
 
     /// Get warnings by category.
     pub fn warnings_by_category(&self, category: WarningCategory) -> Vec<&ValidationWarning> {
-        self.warnings.iter().filter(|w| w.category == category).collect()
+        self.warnings
+            .iter()
+            .filter(|w| w.category == category)
+            .collect()
     }
 }
 
@@ -297,7 +303,9 @@ impl Validator {
             context: Some(format!(
                 "block: {}{}",
                 err.block_id,
-                err.row_index.map(|i| format!(", row: {}", i)).unwrap_or_default()
+                err.row_index
+                    .map(|i| format!(", row: {}", i))
+                    .unwrap_or_default()
             )),
         }
     }
@@ -310,7 +318,9 @@ impl Validator {
             context: Some(format!(
                 "block: {}{}",
                 warn.block_id,
-                warn.row_index.map(|i| format!(", row: {}", i)).unwrap_or_default()
+                warn.row_index
+                    .map(|i| format!(", row: {}", i))
+                    .unwrap_or_default()
             )),
         }
     }
@@ -371,9 +381,7 @@ mod tests {
     #[test]
     fn test_valid_schedule() {
         let gtfs = make_gtfs();
-        let mut schedule = make_schedule(vec![
-            make_row("TRIP1", "B1", "08:00:00", "09:00:00"),
-        ]);
+        let mut schedule = make_schedule(vec![make_row("TRIP1", "B1", "08:00:00", "09:00:00")]);
 
         let validator = Validator::default_config();
         let result = validator.validate(&mut schedule, &gtfs);
@@ -384,16 +392,18 @@ mod tests {
     #[test]
     fn test_missing_trip_strict() {
         let gtfs = make_gtfs();
-        let mut schedule = make_schedule(vec![
-            make_row("MISSING_TRIP", "B1", "08:00:00", "09:00:00"),
-        ]);
+        let mut schedule =
+            make_schedule(vec![make_row("MISSING_TRIP", "B1", "08:00:00", "09:00:00")]);
 
         let config = ValidationConfig::strict();
         let validator = Validator::new(config);
         let result = validator.validate(&mut schedule, &gtfs);
 
         assert!(!result.is_valid());
-        assert!(result.errors.iter().any(|e| e.category == ErrorCategory::GtfsIntegrity));
+        assert!(result
+            .errors
+            .iter()
+            .any(|e| e.category == ErrorCategory::GtfsIntegrity));
     }
 
     #[test]

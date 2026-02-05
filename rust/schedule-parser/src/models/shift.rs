@@ -172,7 +172,8 @@ impl Break {
 
     /// Duration of this break in seconds.
     pub fn duration_seconds(&self) -> u32 {
-        self.end_time_seconds.saturating_sub(self.start_time_seconds)
+        self.end_time_seconds
+            .saturating_sub(self.start_time_seconds)
     }
 
     /// Set the location.
@@ -201,7 +202,7 @@ mod tests {
         let shift = Shift {
             shift_id: "S1".to_string(),
             duty_id: "D1".to_string(),
-            sign_on_seconds: Some(21600), // 06:00
+            sign_on_seconds: Some(21600),  // 06:00
             sign_off_seconds: Some(54000), // 15:00
             breaks: vec![],
             depot: None,
@@ -215,8 +216,8 @@ mod tests {
         let shift = Shift {
             shift_id: "S1".to_string(),
             duty_id: "D1".to_string(),
-            sign_on_seconds: Some(21600), // 06:00
-            sign_off_seconds: Some(54000), // 15:00
+            sign_on_seconds: Some(21600),           // 06:00
+            sign_off_seconds: Some(54000),          // 15:00
             breaks: vec![Break::new(36000, 37800)], // 30 min unpaid break at 10:00
             depot: None,
         };
@@ -234,7 +235,7 @@ mod tests {
             sign_off_seconds: Some(54000),
             breaks: vec![
                 Break::paid(28800, 29700), // 15 min paid at 08:00
-                Break::new(36000, 37800),   // 30 min unpaid at 10:00
+                Break::new(36000, 37800),  // 30 min unpaid at 10:00
             ],
             depot: None,
         };

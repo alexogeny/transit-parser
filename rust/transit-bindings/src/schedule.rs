@@ -5,9 +5,9 @@ use pyo3::exceptions::{PyIOError, PyValueError};
 use pyo3::prelude::*;
 use pyo3::types::{PyDict, PyList};
 use schedule_parser::{
-    ColumnMapping, CsvExporter, DeadheadInferrer, ExportConfig, ExportPreset,
-    GtfsComplianceLevel, ReadOptions, Schedule, ScheduleReader, ScheduleRow, ValidationConfig,
-    ValidationResult, Validator,
+    ColumnMapping, CsvExporter, DeadheadInferrer, ExportConfig, ExportPreset, GtfsComplianceLevel,
+    ReadOptions, Schedule, ScheduleReader, ScheduleRow, ValidationConfig, ValidationResult,
+    Validator,
 };
 
 /// Python wrapper for ScheduleRow.
@@ -219,7 +219,10 @@ impl PySchedule {
     /// Load a schedule with custom column mapping.
     #[staticmethod]
     #[pyo3(signature = (path, column_mapping=None))]
-    fn from_csv_with_mapping(path: &str, column_mapping: Option<&Bound<'_, PyDict>>) -> PyResult<Self> {
+    fn from_csv_with_mapping(
+        path: &str,
+        column_mapping: Option<&Bound<'_, PyDict>>,
+    ) -> PyResult<Self> {
         let mut options = ReadOptions::new();
 
         if let Some(mapping) = column_mapping {
@@ -245,10 +248,7 @@ impl PySchedule {
     /// Get all rows.
     #[getter]
     fn rows(&self, py: Python<'_>) -> PyResult<Py<PyList>> {
-        let list = PyList::new(
-            py,
-            self.inner.rows.iter().cloned().map(PyScheduleRow::from),
-        )?;
+        let list = PyList::new(py, self.inner.rows.iter().cloned().map(PyScheduleRow::from))?;
         Ok(list.into())
     }
 
@@ -294,7 +294,11 @@ impl PySchedule {
 
     /// Validate the schedule against GTFS data.
     #[pyo3(signature = (gtfs, config=None))]
-    fn validate(&mut self, gtfs: &PyGtfsFeed, config: Option<&PyValidationConfig>) -> PyResult<PyValidationResult> {
+    fn validate(
+        &mut self,
+        gtfs: &PyGtfsFeed,
+        config: Option<&PyValidationConfig>,
+    ) -> PyResult<PyValidationResult> {
         let cfg = config
             .map(|c| c.inner.clone())
             .unwrap_or_else(ValidationConfig::new);
@@ -307,7 +311,10 @@ impl PySchedule {
 
     /// Validate schedule structure (without GTFS).
     #[pyo3(signature = (config=None))]
-    fn validate_structure(&mut self, config: Option<&PyValidationConfig>) -> PyResult<PyValidationResult> {
+    fn validate_structure(
+        &mut self,
+        config: Option<&PyValidationConfig>,
+    ) -> PyResult<PyValidationResult> {
         let cfg = config
             .map(|c| c.inner.clone())
             .unwrap_or_else(ValidationConfig::new);
@@ -358,7 +365,11 @@ impl PySchedule {
 
     /// Export to CSV string.
     #[pyo3(signature = (columns=None, preset=None))]
-    fn to_csv_string(&self, columns: Option<Vec<String>>, preset: Option<&str>) -> PyResult<String> {
+    fn to_csv_string(
+        &self,
+        columns: Option<Vec<String>>,
+        preset: Option<&str>,
+    ) -> PyResult<String> {
         let config = Self::build_export_config(columns, preset)?;
         let exporter = CsvExporter::new(config);
         exporter
@@ -388,7 +399,12 @@ impl PySchedule {
                 "optibus" | "optibus_like" => ExportPreset::OptibusLike,
                 "hastus" | "hastus_like" => ExportPreset::HastusLike,
                 "gtfs_block" => ExportPreset::GtfsBlock,
-                _ => return Err(PyValueError::new_err(format!("Unknown preset: {}", preset_name))),
+                _ => {
+                    return Err(PyValueError::new_err(format!(
+                        "Unknown preset: {}",
+                        preset_name
+                    )))
+                }
             };
             return Ok(preset.to_config());
         }
@@ -443,7 +459,12 @@ impl PyValidationConfig {
                 "strict" => GtfsComplianceLevel::Strict,
                 "standard" => GtfsComplianceLevel::Standard,
                 "lenient" => GtfsComplianceLevel::Lenient,
-                _ => return Err(PyValueError::new_err(format!("Unknown compliance level: {}", level))),
+                _ => {
+                    return Err(PyValueError::new_err(format!(
+                        "Unknown compliance level: {}",
+                        level
+                    )))
+                }
             };
         }
 
@@ -538,7 +559,8 @@ impl PyValidationResult {
             .map(|e| {
                 let dict = PyDict::new(py);
                 dict.set_item("code", &e.code).unwrap();
-                dict.set_item("category", format!("{:?}", e.category)).unwrap();
+                dict.set_item("category", format!("{:?}", e.category))
+                    .unwrap();
                 dict.set_item("message", &e.message).unwrap();
                 dict.set_item("context", &e.context).unwrap();
                 dict.to_object(py)
@@ -557,7 +579,8 @@ impl PyValidationResult {
             .map(|w| {
                 let dict = PyDict::new(py);
                 dict.set_item("code", &w.code).unwrap();
-                dict.set_item("category", format!("{:?}", w.category)).unwrap();
+                dict.set_item("category", format!("{:?}", w.category))
+                    .unwrap();
                 dict.set_item("message", &w.message).unwrap();
                 dict.set_item("context", &w.context).unwrap();
                 dict.to_object(py)

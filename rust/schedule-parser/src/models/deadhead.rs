@@ -106,10 +106,7 @@ impl Deadhead {
     }
 
     /// Create an interlining deadhead.
-    pub fn interlining(
-        from_stop: impl Into<String>,
-        to_stop: impl Into<String>,
-    ) -> Self {
+    pub fn interlining(from_stop: impl Into<String>, to_stop: impl Into<String>) -> Self {
         Self {
             deadhead_type: DeadheadType::Interlining,
             from_location: from_stop.into(),
@@ -263,8 +260,7 @@ mod tests {
 
     #[test]
     fn test_interlining() {
-        let dh = Deadhead::interlining("STOP_B", "STOP_C")
-            .with_trips(Some("TRIP1"), Some("TRIP2"));
+        let dh = Deadhead::interlining("STOP_B", "STOP_C").with_trips(Some("TRIP1"), Some("TRIP2"));
 
         assert_eq!(dh.deadhead_type, DeadheadType::Interlining);
         assert!(!dh.is_depot_movement());

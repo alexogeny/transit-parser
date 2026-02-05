@@ -54,14 +54,14 @@ pub struct BusinessRules {
 impl Default for BusinessRules {
     fn default() -> Self {
         Self {
-            min_layover_seconds: 300,           // 5 minutes
-            max_trip_duration_seconds: 14400,   // 4 hours
-            max_duty_length_seconds: 32400,     // 9 hours
+            min_layover_seconds: 300,              // 5 minutes
+            max_trip_duration_seconds: 14400,      // 4 hours
+            max_duty_length_seconds: 32400,        // 9 hours
             max_continuous_driving_seconds: 16200, // 4.5 hours
-            min_break_duration_seconds: 1800,   // 30 minutes
-            time_tolerance_seconds: 60,         // 1 minute
+            min_break_duration_seconds: 1800,      // 30 minutes
+            time_tolerance_seconds: 60,            // 1 minute
             min_block_duration_seconds: 0,
-            max_block_duration_seconds: 57600,  // 16 hours
+            max_block_duration_seconds: 57600, // 16 hours
             flag_orphan_trips: true,
             flag_missing_coordinates: false,
             headway_deviation_threshold: Some(2.0), // 2x standard deviation
@@ -73,14 +73,14 @@ impl BusinessRules {
     /// Create strict business rules (tighter constraints).
     pub fn strict() -> Self {
         Self {
-            min_layover_seconds: 600,           // 10 minutes
-            max_trip_duration_seconds: 10800,   // 3 hours
-            max_duty_length_seconds: 28800,     // 8 hours
+            min_layover_seconds: 600,              // 10 minutes
+            max_trip_duration_seconds: 10800,      // 3 hours
+            max_duty_length_seconds: 28800,        // 8 hours
             max_continuous_driving_seconds: 14400, // 4 hours
-            min_break_duration_seconds: 2700,   // 45 minutes
-            time_tolerance_seconds: 30,         // 30 seconds
-            min_block_duration_seconds: 3600,   // 1 hour
-            max_block_duration_seconds: 43200,  // 12 hours
+            min_break_duration_seconds: 2700,      // 45 minutes
+            time_tolerance_seconds: 30,            // 30 seconds
+            min_block_duration_seconds: 3600,      // 1 hour
+            max_block_duration_seconds: 43200,     // 12 hours
             flag_orphan_trips: true,
             flag_missing_coordinates: true,
             headway_deviation_threshold: Some(1.5),
@@ -90,14 +90,14 @@ impl BusinessRules {
     /// Create lenient business rules (relaxed constraints).
     pub fn lenient() -> Self {
         Self {
-            min_layover_seconds: 60,            // 1 minute
-            max_trip_duration_seconds: 21600,   // 6 hours
-            max_duty_length_seconds: 43200,     // 12 hours
+            min_layover_seconds: 60,               // 1 minute
+            max_trip_duration_seconds: 21600,      // 6 hours
+            max_duty_length_seconds: 43200,        // 12 hours
             max_continuous_driving_seconds: 21600, // 6 hours
-            min_break_duration_seconds: 900,    // 15 minutes
-            time_tolerance_seconds: 300,        // 5 minutes
+            min_break_duration_seconds: 900,       // 15 minutes
+            time_tolerance_seconds: 300,           // 5 minutes
             min_block_duration_seconds: 0,
-            max_block_duration_seconds: 86400,  // 24 hours
+            max_block_duration_seconds: 86400, // 24 hours
             flag_orphan_trips: false,
             flag_missing_coordinates: false,
             headway_deviation_threshold: None,

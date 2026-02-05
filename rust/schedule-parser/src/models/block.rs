@@ -92,7 +92,10 @@ impl Block {
 
     /// Get the pull-in row (last deadhead to depot).
     pub fn pull_in(&self) -> Option<&ScheduleRow> {
-        self.rows.iter().rev().find(|r| r.row_type == RowType::PullIn)
+        self.rows
+            .iter()
+            .rev()
+            .find(|r| r.row_type == RowType::PullIn)
     }
 
     /// Get the first row in the block.
@@ -107,7 +110,10 @@ impl Block {
 
     /// Get block start time (earliest start_time).
     pub fn start_time_seconds(&self) -> Option<u32> {
-        self.rows.iter().filter_map(|r| r.start_time_seconds()).min()
+        self.rows
+            .iter()
+            .filter_map(|r| r.start_time_seconds())
+            .min()
     }
 
     /// Get block end time (latest end_time).
@@ -211,14 +217,24 @@ pub struct BlockSummary {
 mod tests {
     use super::*;
 
-    fn make_row(start: &str, end: &str, row_type: RowType, start_place: Option<&str>, end_place: Option<&str>) -> ScheduleRow {
+    fn make_row(
+        start: &str,
+        end: &str,
+        row_type: RowType,
+        start_place: Option<&str>,
+        end_place: Option<&str>,
+    ) -> ScheduleRow {
         ScheduleRow {
             start_time: Some(start.to_string()),
             end_time: Some(end.to_string()),
             row_type,
             start_place: start_place.map(String::from),
             end_place: end_place.map(String::from),
-            trip_id: if row_type == RowType::Revenue { Some("T1".to_string()) } else { None },
+            trip_id: if row_type == RowType::Revenue {
+                Some("T1".to_string())
+            } else {
+                None
+            },
             ..Default::default()
         }
     }
@@ -226,19 +242,43 @@ mod tests {
     #[test]
     fn test_block_duration() {
         let mut block = Block::new("B1".to_string());
-        block.add_row(make_row("08:00:00", "09:00:00", RowType::Revenue, None, None));
-        block.add_row(make_row("09:15:00", "10:00:00", RowType::Revenue, None, None));
+        block.add_row(make_row(
+            "08:00:00",
+            "09:00:00",
+            RowType::Revenue,
+            None,
+            None,
+        ));
+        block.add_row(make_row(
+            "09:15:00",
+            "10:00:00",
+            RowType::Revenue,
+            None,
+            None,
+        ));
 
         assert_eq!(block.start_time_seconds(), Some(28800)); // 08:00
-        assert_eq!(block.end_time_seconds(), Some(36000));   // 10:00
-        assert_eq!(block.duration_seconds(), Some(7200));    // 2 hours
+        assert_eq!(block.end_time_seconds(), Some(36000)); // 10:00
+        assert_eq!(block.duration_seconds(), Some(7200)); // 2 hours
     }
 
     #[test]
     fn test_find_gaps() {
         let mut block = Block::new("B1".to_string());
-        block.add_row(make_row("08:00:00", "09:00:00", RowType::Revenue, None, None));
-        block.add_row(make_row("09:30:00", "10:00:00", RowType::Revenue, None, None)); // 30 min gap
+        block.add_row(make_row(
+            "08:00:00",
+            "09:00:00",
+            RowType::Revenue,
+            None,
+            None,
+        ));
+        block.add_row(make_row(
+            "09:30:00",
+            "10:00:00",
+            RowType::Revenue,
+            None,
+            None,
+        )); // 30 min gap
 
         let gaps = block.find_gaps();
         assert_eq!(gaps.len(), 1);
@@ -248,8 +288,20 @@ mod tests {
     #[test]
     fn test_location_discontinuities() {
         let mut block = Block::new("B1".to_string());
-        block.add_row(make_row("08:00:00", "09:00:00", RowType::Revenue, Some("A"), Some("B")));
-        block.add_row(make_row("09:00:00", "10:00:00", RowType::Revenue, Some("C"), Some("D"))); // B != C
+        block.add_row(make_row(
+            "08:00:00",
+            "09:00:00",
+            RowType::Revenue,
+            Some("A"),
+            Some("B"),
+        ));
+        block.add_row(make_row(
+            "09:00:00",
+            "10:00:00",
+            RowType::Revenue,
+            Some("C"),
+            Some("D"),
+        )); // B != C
 
         let discs = block.find_location_discontinuities();
         assert_eq!(discs.len(), 1);
@@ -259,10 +311,34 @@ mod tests {
     #[test]
     fn test_revenue_time() {
         let mut block = Block::new("B1".to_string());
-        block.add_row(make_row("08:00:00", "09:00:00", RowType::PullOut, None, None));
-        block.add_row(make_row("09:00:00", "10:00:00", RowType::Revenue, None, None)); // 1 hour
-        block.add_row(make_row("10:00:00", "11:00:00", RowType::Revenue, None, None)); // 1 hour
-        block.add_row(make_row("11:00:00", "11:30:00", RowType::PullIn, None, None));
+        block.add_row(make_row(
+            "08:00:00",
+            "09:00:00",
+            RowType::PullOut,
+            None,
+            None,
+        ));
+        block.add_row(make_row(
+            "09:00:00",
+            "10:00:00",
+            RowType::Revenue,
+            None,
+            None,
+        )); // 1 hour
+        block.add_row(make_row(
+            "10:00:00",
+            "11:00:00",
+            RowType::Revenue,
+            None,
+            None,
+        )); // 1 hour
+        block.add_row(make_row(
+            "11:00:00",
+            "11:30:00",
+            RowType::PullIn,
+            None,
+            None,
+        ));
 
         assert_eq!(block.revenue_time_seconds(), 7200); // 2 hours
         assert_eq!(block.deadhead_time_seconds(), 5400); // 1.5 hours (pull-out + pull-in)

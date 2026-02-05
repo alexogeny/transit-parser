@@ -37,12 +37,12 @@ pub mod reader;
 pub mod validation;
 
 // Re-exports
-pub use deadhead::{DeadheadInferrer, inferrer::InferenceConfig};
+pub use deadhead::{inferrer::InferenceConfig, DeadheadInferrer};
 pub use formats::{CsvExporter, ExportConfig, ExportPreset};
 pub use models::{
-    Block, BlockSummary, Break, Deadhead, DeadheadInferenceResult, DeadheadType, Duty,
-    DutySummary, PieceOfWork, RowType, Schedule, ScheduleMetadata, ScheduleRow, ScheduleSummary,
-    Shift, ShiftSummary,
+    Block, BlockSummary, Break, Deadhead, DeadheadInferenceResult, DeadheadType, Duty, DutySummary,
+    PieceOfWork, RowType, Schedule, ScheduleMetadata, ScheduleRow, ScheduleSummary, Shift,
+    ShiftSummary,
 };
 pub use reader::{ColumnMapping, ReadOptions, ScheduleReader};
 pub use validation::{

@@ -56,11 +56,15 @@ from transit_parser._core import (
     ConversionStats,
     # CSV/JSON
     CsvDocument,
+    DeadheadInferenceResult,
     # GTFS
     GtfsFeed,
     JsonDocument,
     LazyGtfsFeed,
     Route,
+    # Schedule
+    Schedule,
+    ScheduleRow,
     Shape,
     Stop,
     StopTime,
@@ -69,12 +73,8 @@ from transit_parser._core import (
     TxcDocument,
     # Adapters
     TxcToGtfsConverter,
-    # Schedule
-    Schedule,
-    ScheduleRow,
     ValidationConfig,
     ValidationResult,
-    DeadheadInferenceResult,
 )
 
 # Import exceptions

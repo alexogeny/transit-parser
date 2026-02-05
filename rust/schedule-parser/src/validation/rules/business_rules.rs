@@ -135,10 +135,9 @@ impl<'a> BusinessRuleChecker<'a> {
             return result;
         }
 
-        if let (Some(prev_end), Some(curr_start)) = (
-            prev_row.end_time_seconds(),
-            curr_row.start_time_seconds(),
-        ) {
+        if let (Some(prev_end), Some(curr_start)) =
+            (prev_row.end_time_seconds(), curr_row.start_time_seconds())
+        {
             if curr_start > prev_end {
                 let layover = curr_start - prev_end;
                 if layover < rules.min_layover_seconds {

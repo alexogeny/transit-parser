@@ -82,7 +82,10 @@ impl Duty {
                 return Some(t);
             }
         }
-        self.rows.iter().filter_map(|r| r.start_time_seconds()).min()
+        self.rows
+            .iter()
+            .filter_map(|r| r.start_time_seconds())
+            .min()
     }
 
     /// Get the latest end time (or sign_off_time if set).
@@ -139,11 +142,7 @@ impl Duty {
 
     /// Get unique block IDs this duty works on.
     pub fn block_ids(&self) -> Vec<String> {
-        let mut ids: Vec<String> = self
-            .rows
-            .iter()
-            .filter_map(|r| r.block.clone())
-            .collect();
+        let mut ids: Vec<String> = self.rows.iter().filter_map(|r| r.block.clone()).collect();
         ids.sort();
         ids.dedup();
         ids

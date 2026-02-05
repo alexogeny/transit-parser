@@ -126,12 +126,16 @@ impl ScheduleRow {
 
     /// Parse start_time as seconds since midnight.
     pub fn start_time_seconds(&self) -> Option<u32> {
-        self.start_time.as_ref().and_then(|t| parse_time_to_seconds(t))
+        self.start_time
+            .as_ref()
+            .and_then(|t| parse_time_to_seconds(t))
     }
 
     /// Parse end_time as seconds since midnight.
     pub fn end_time_seconds(&self) -> Option<u32> {
-        self.end_time.as_ref().and_then(|t| parse_time_to_seconds(t))
+        self.end_time
+            .as_ref()
+            .and_then(|t| parse_time_to_seconds(t))
     }
 
     /// Calculate duration in seconds.

@@ -167,13 +167,21 @@ impl CsvExporter {
     }
 
     /// Export schedule to a file.
-    pub fn export_to_path(&self, schedule: &Schedule, path: impl AsRef<Path>) -> Result<(), ParseError> {
+    pub fn export_to_path(
+        &self,
+        schedule: &Schedule,
+        path: impl AsRef<Path>,
+    ) -> Result<(), ParseError> {
         let file = File::create(path).map_err(ParseError::Io)?;
         self.export_to_writer(schedule, file)
     }
 
     /// Export schedule to a writer.
-    pub fn export_to_writer<W: Write>(&self, schedule: &Schedule, writer: W) -> Result<(), ParseError> {
+    pub fn export_to_writer<W: Write>(
+        &self,
+        schedule: &Schedule,
+        writer: W,
+    ) -> Result<(), ParseError> {
         let mut csv_writer = Writer::from_writer(writer);
 
         // Write header
@@ -198,7 +206,9 @@ impl CsvExporter {
                 .map_err(|e| ParseError::Csv(e.to_string()))?;
         }
 
-        csv_writer.flush().map_err(|e| ParseError::Csv(e.to_string()))?;
+        csv_writer
+            .flush()
+            .map_err(|e| ParseError::Csv(e.to_string()))?;
         Ok(())
     }
 
@@ -392,8 +402,7 @@ mod tests {
     #[test]
     fn test_time_format_hhmm() {
         let schedule = Schedule::from_rows(vec![make_row()]);
-        let config = ExportConfig::with_columns(vec!["start_time"])
-            .time_format(TimeFormat::HhMm);
+        let config = ExportConfig::with_columns(vec!["start_time"]).time_format(TimeFormat::HhMm);
         let exporter = CsvExporter::new(config);
 
         let result = exporter.export_to_string(&schedule).unwrap();
@@ -408,8 +417,7 @@ mod tests {
         row.depot = None;
 
         let schedule = Schedule::from_rows(vec![row]);
-        let config = ExportConfig::with_columns(vec!["run_number", "depot"])
-            .null_value("N/A");
+        let config = ExportConfig::with_columns(vec!["run_number", "depot"]).null_value("N/A");
         let exporter = CsvExporter::new(config);
 
         let result = exporter.export_to_string(&schedule).unwrap();

@@ -100,11 +100,7 @@ impl Schedule {
 
     /// Get unique block IDs.
     pub fn block_ids(&self) -> Vec<String> {
-        let mut ids: Vec<String> = self
-            .rows
-            .iter()
-            .filter_map(|r| r.block.clone())
-            .collect();
+        let mut ids: Vec<String> = self.rows.iter().filter_map(|r| r.block.clone()).collect();
         ids.sort();
         ids.dedup();
         ids
@@ -124,11 +120,7 @@ impl Schedule {
 
     /// Get unique depot codes.
     pub fn depots(&self) -> Vec<String> {
-        let mut depots: Vec<String> = self
-            .rows
-            .iter()
-            .filter_map(|r| r.depot.clone())
-            .collect();
+        let mut depots: Vec<String> = self.rows.iter().filter_map(|r| r.depot.clone()).collect();
         depots.sort();
         depots.dedup();
         depots

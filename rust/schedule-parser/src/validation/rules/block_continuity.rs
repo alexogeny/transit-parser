@@ -80,9 +80,7 @@ impl<'a> BlockContinuityChecker<'a> {
                             row_index: Some(idx),
                             message: format!(
                                 "Row {} starts at {} but previous row ends at {}",
-                                idx,
-                                start,
-                                prev
+                                idx, start, prev
                             ),
                         });
                     }
@@ -94,7 +92,10 @@ impl<'a> BlockContinuityChecker<'a> {
         // Check location continuity
         for disc_idx in block.find_location_discontinuities() {
             let from_place = block.rows[disc_idx].end_place.as_deref().unwrap_or("?");
-            let to_place = block.rows[disc_idx + 1].start_place.as_deref().unwrap_or("?");
+            let to_place = block.rows[disc_idx + 1]
+                .start_place
+                .as_deref()
+                .unwrap_or("?");
 
             // This could be an error in strict mode, warning otherwise
             result.warnings.push(BlockContinuityWarning {
@@ -103,7 +104,10 @@ impl<'a> BlockContinuityChecker<'a> {
                 row_index: Some(disc_idx),
                 message: format!(
                     "Location discontinuity: row {} ends at '{}' but row {} starts at '{}'",
-                    disc_idx, from_place, disc_idx + 1, to_place
+                    disc_idx,
+                    from_place,
+                    disc_idx + 1,
+                    to_place
                 ),
             });
         }

@@ -71,12 +71,39 @@ impl ColumnMapping {
         let mut mapping = Self::new();
 
         let patterns: &[(&str, &[&str])] = &[
-            ("run_number", &["run_number", "run", "run_no", "driver_id", "operator_id"]),
+            (
+                "run_number",
+                &["run_number", "run", "run_no", "driver_id", "operator_id"],
+            ),
             ("block", &["block", "block_id", "vehicle_block", "blk"]),
-            ("start_place", &["start_place", "start_stop", "from_stop", "origin", "start_location"]),
-            ("end_place", &["end_place", "end_stop", "to_stop", "destination", "end_location"]),
-            ("start_time", &["start_time", "departure_time", "depart_time", "start"]),
-            ("end_time", &["end_time", "arrival_time", "arrive_time", "end"]),
+            (
+                "start_place",
+                &[
+                    "start_place",
+                    "start_stop",
+                    "from_stop",
+                    "origin",
+                    "start_location",
+                ],
+            ),
+            (
+                "end_place",
+                &[
+                    "end_place",
+                    "end_stop",
+                    "to_stop",
+                    "destination",
+                    "end_location",
+                ],
+            ),
+            (
+                "start_time",
+                &["start_time", "departure_time", "depart_time", "start"],
+            ),
+            (
+                "end_time",
+                &["end_time", "arrival_time", "arrive_time", "end"],
+            ),
             ("trip_id", &["trip_id", "trip", "gtfs_trip_id"]),
             ("depot", &["depot", "garage", "depot_id", "base"]),
             ("vehicle_class", &["vehicle_class", "veh_class", "bus_type"]),
@@ -86,7 +113,10 @@ impl ColumnMapping {
             ("end_lat", &["end_lat", "to_lat", "dest_lat"]),
             ("end_lon", &["end_lon", "to_lon", "dest_lon"]),
             ("route_shape_id", &["route_shape_id", "shape_id"]),
-            ("row_type", &["row_type", "type", "activity_type", "movement_type"]),
+            (
+                "row_type",
+                &["row_type", "type", "activity_type", "movement_type"],
+            ),
             ("duty_id", &["duty_id", "duty", "crew_id"]),
             ("shift_id", &["shift_id", "shift"]),
             ("route_short_name", &["route_short_name", "route", "line"]),
@@ -262,9 +292,8 @@ impl ScheduleReader {
             }
         };
 
-        let get_f64 = |field: &str| -> Option<f64> {
-            get_field(field).and_then(|s| s.parse().ok())
-        };
+        let get_f64 =
+            |field: &str| -> Option<f64> { get_field(field).and_then(|s| s.parse().ok()) };
 
         let row_type = get_field("row_type")
             .map(|s| parse_row_type(&s))

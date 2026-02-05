@@ -43,7 +43,8 @@ impl InferenceConfig {
 
     /// Add a depot location.
     pub fn add_depot(mut self, stop_id: impl Into<String>, depot_code: impl Into<String>) -> Self {
-        self.depot_locations.insert(stop_id.into(), depot_code.into());
+        self.depot_locations
+            .insert(stop_id.into(), depot_code.into());
         self
     }
 
@@ -122,7 +123,9 @@ impl<'a> DeadheadInferrer<'a> {
         let block = block.clone(); // Clone to avoid borrow issues
 
         // Get depot for this block
-        let depot = block.depot.clone()
+        let depot = block
+            .depot
+            .clone()
             .or_else(|| self.config.default_depot.clone())
             .ok_or("No depot available")?;
 
@@ -146,7 +149,8 @@ impl<'a> DeadheadInferrer<'a> {
                     if let Some(trip_start) = first.start_time_seconds() {
                         // Assume 15 minutes for pull-out by default
                         let pull_out_duration = self.estimate_duration(&depot, start_place);
-                        pull_out.start_time_seconds = Some(trip_start.saturating_sub(pull_out_duration));
+                        pull_out.start_time_seconds =
+                            Some(trip_start.saturating_sub(pull_out_duration));
                         pull_out.end_time_seconds = Some(trip_start);
                     }
 
@@ -195,18 +199,18 @@ impl<'a> DeadheadInferrer<'a> {
                 if let (Some(end_place), Some(start_place)) = (&prev.end_place, &next.start_place) {
                     if end_place != start_place {
                         // Check if there's a time gap
-                        let needs_deadhead = match (prev.end_time_seconds(), next.start_time_seconds()) {
-                            (Some(end), Some(start)) => start > end + self.config.min_gap_seconds,
-                            _ => true, // If no times, assume we need it
-                        };
+                        let needs_deadhead =
+                            match (prev.end_time_seconds(), next.start_time_seconds()) {
+                                (Some(end), Some(start)) => {
+                                    start > end + self.config.min_gap_seconds
+                                }
+                                _ => true, // If no times, assume we need it
+                            };
 
                         if needs_deadhead {
                             let mut interlining = Deadhead::interlining(end_place, start_place)
                                 .with_block(block_id)
-                                .with_trips(
-                                    prev.trip_id.clone(),
-                                    next.trip_id.clone(),
-                                )
+                                .with_trips(prev.trip_id.clone(), next.trip_id.clone())
                                 .inferred();
 
                             // Add coordinates
@@ -220,7 +224,9 @@ impl<'a> DeadheadInferrer<'a> {
                             }
 
                             // Set times
-                            if let (Some(end), Some(start)) = (prev.end_time_seconds(), next.start_time_seconds()) {
+                            if let (Some(end), Some(start)) =
+                                (prev.end_time_seconds(), next.start_time_seconds())
+                            {
                                 interlining.start_time_seconds = Some(end);
                                 interlining.end_time_seconds = Some(start);
                             }
@@ -238,10 +244,9 @@ impl<'a> DeadheadInferrer<'a> {
     /// Estimate deadhead duration based on distance and average speed.
     fn estimate_duration(&self, from: &str, to: &str) -> u32 {
         // Try to calculate from coordinates
-        if let (Some(&(lat1, lon1)), Some(&(lat2, lon2))) = (
-            self.stop_coords.get(from),
-            self.stop_coords.get(to),
-        ) {
+        if let (Some(&(lat1, lon1)), Some(&(lat2, lon2))) =
+            (self.stop_coords.get(from), self.stop_coords.get(to))
+        {
             let distance = haversine_distance(lat1, lon1, lat2, lon2);
             let time = distance / self.config.average_speed_mps;
             return time as u32;
@@ -273,7 +278,14 @@ mod tests {
     use super::*;
     use crate::models::{RowType, ScheduleRow};
 
-    fn make_row(trip_id: &str, block: &str, start_place: &str, end_place: &str, start: &str, end: &str) -> ScheduleRow {
+    fn make_row(
+        trip_id: &str,
+        block: &str,
+        start_place: &str,
+        end_place: &str,
+        start: &str,
+        end: &str,
+    ) -> ScheduleRow {
         ScheduleRow {
             trip_id: Some(trip_id.to_string()),
             block: Some(block.to_string()),
@@ -313,8 +325,7 @@ mod tests {
 
     #[test]
     fn test_infer_interlining() {
-        let config = InferenceConfig::new()
-            .with_default_depot("DEPOT");
+        let config = InferenceConfig::new().with_default_depot("DEPOT");
         let inferrer = DeadheadInferrer::new(config);
 
         let mut schedule = Schedule::from_rows(vec![
@@ -354,9 +365,8 @@ mod tests {
         let config = InferenceConfig::new(); // No default depot
         let inferrer = DeadheadInferrer::new(config);
 
-        let mut schedule = Schedule::from_rows(vec![
-            make_row("T1", "B1", "A", "B", "08:00:00", "09:00:00"),
-        ]);
+        let mut schedule =
+            Schedule::from_rows(vec![make_row("T1", "B1", "A", "B", "08:00:00", "09:00:00")]);
 
         let result = inferrer.infer(&mut schedule);
 

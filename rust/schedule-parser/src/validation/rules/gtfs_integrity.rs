@@ -63,26 +63,11 @@ impl<'a> GtfsIntegrityChecker<'a> {
     /// Create a new integrity checker.
     pub fn new(gtfs: &'a GtfsFeed, config: &'a ValidationConfig) -> Self {
         // Pre-compute ID sets for fast lookup
-        let trip_ids: HashSet<String> = gtfs
-            .feed
-            .trips
-            .iter()
-            .map(|t| t.id.clone())
-            .collect();
+        let trip_ids: HashSet<String> = gtfs.feed.trips.iter().map(|t| t.id.clone()).collect();
 
-        let stop_ids: HashSet<String> = gtfs
-            .feed
-            .stops
-            .iter()
-            .map(|s| s.id.clone())
-            .collect();
+        let stop_ids: HashSet<String> = gtfs.feed.stops.iter().map(|s| s.id.clone()).collect();
 
-        let shape_ids: HashSet<String> = gtfs
-            .feed
-            .shapes
-            .iter()
-            .map(|s| s.id.clone())
-            .collect();
+        let shape_ids: HashSet<String> = gtfs.feed.shapes.iter().map(|s| s.id.clone()).collect();
 
         Self {
             gtfs,
@@ -148,7 +133,10 @@ impl<'a> GtfsIntegrityChecker<'a> {
                             row_index,
                             field: "route_shape_id".to_string(),
                             value: shape_id.clone(),
-                            message: format!("Shape ID '{}' not found in GTFS shapes.txt", shape_id),
+                            message: format!(
+                                "Shape ID '{}' not found in GTFS shapes.txt",
+                                shape_id
+                            ),
                         });
                     }
                     _ => {
@@ -272,7 +260,9 @@ mod tests {
 
         let mut feed = GtfsFeed::new();
         feed.feed.trips.push(Trip::new(trip_id, "R1", "S1"));
-        feed.feed.stops.push(Stop::new(stop_id, "Test Stop", 0.0, 0.0));
+        feed.feed
+            .stops
+            .push(Stop::new(stop_id, "Test Stop", 0.0, 0.0));
         feed
     }
 
@@ -307,7 +297,10 @@ mod tests {
 
         let result = checker.check_row(&row, 0);
         assert!(!result.is_valid());
-        assert_eq!(result.errors[0].error_type, GtfsIntegrityErrorType::MissingTripId);
+        assert_eq!(
+            result.errors[0].error_type,
+            GtfsIntegrityErrorType::MissingTripId
+        );
     }
 
     #[test]
