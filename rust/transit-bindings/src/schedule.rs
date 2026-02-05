@@ -4,6 +4,7 @@ use crate::gtfs::PyGtfsFeed;
 use pyo3::exceptions::{PyIOError, PyValueError};
 use pyo3::prelude::*;
 use pyo3::types::{PyDict, PyList};
+use pyo3::Bound;
 use schedule_parser::{
     ColumnMapping, CsvExporter, DeadheadInferrer, ExportConfig, ExportPreset, GtfsComplianceLevel,
     ReadOptions, Schedule, ScheduleReader, ScheduleRow, ValidationConfig, ValidationResult,
@@ -299,9 +300,7 @@ impl PySchedule {
         gtfs: &PyGtfsFeed,
         config: Option<&PyValidationConfig>,
     ) -> PyResult<PyValidationResult> {
-        let cfg = config
-            .map(|c| c.inner.clone())
-            .unwrap_or_else(ValidationConfig::new);
+        let cfg = config.map(|c| c.inner.clone()).unwrap_or_default();
 
         let validator = Validator::new(cfg);
         let result = validator.validate(&mut self.inner, &gtfs.inner);
@@ -315,9 +314,7 @@ impl PySchedule {
         &mut self,
         config: Option<&PyValidationConfig>,
     ) -> PyResult<PyValidationResult> {
-        let cfg = config
-            .map(|c| c.inner.clone())
-            .unwrap_or_else(ValidationConfig::new);
+        let cfg = config.map(|c| c.inner.clone()).unwrap_or_default();
 
         let validator = Validator::new(cfg);
         let result = validator.validate_structure(&mut self.inner);
@@ -440,6 +437,7 @@ impl PyValidationConfig {
         validate_duty_constraints=None,
         generate_warnings=None
     ))]
+    #[allow(clippy::too_many_arguments)]
     fn new(
         gtfs_compliance: Option<&str>,
         min_layover_seconds: Option<u32>,
@@ -552,7 +550,7 @@ impl PyValidationResult {
     /// Get all errors.
     #[getter]
     fn errors(&self, py: Python<'_>) -> PyResult<Py<PyList>> {
-        let errors: Vec<_> = self
+        let errors: Vec<Bound<'_, PyDict>> = self
             .inner
             .errors
             .iter()
@@ -563,7 +561,7 @@ impl PyValidationResult {
                     .unwrap();
                 dict.set_item("message", &e.message).unwrap();
                 dict.set_item("context", &e.context).unwrap();
-                dict.to_object(py)
+                dict
             })
             .collect();
         Ok(PyList::new(py, errors)?.into())
@@ -572,7 +570,7 @@ impl PyValidationResult {
     /// Get all warnings.
     #[getter]
     fn warnings(&self, py: Python<'_>) -> PyResult<Py<PyList>> {
-        let warnings: Vec<_> = self
+        let warnings: Vec<Bound<'_, PyDict>> = self
             .inner
             .warnings
             .iter()
@@ -583,7 +581,7 @@ impl PyValidationResult {
                     .unwrap();
                 dict.set_item("message", &w.message).unwrap();
                 dict.set_item("context", &w.context).unwrap();
-                dict.to_object(py)
+                dict
             })
             .collect();
         Ok(PyList::new(py, warnings)?.into())
